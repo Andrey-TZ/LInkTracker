@@ -1,10 +1,12 @@
 package backend.academy.bot;
 
 import backend.academy.common.Link;
-import backend.academy.bot.UpdateMessage;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -12,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @Component
+
 public class ScrapperClient {
     private final WebClient webClient;
     private final ApplicationEventPublisher eventPublisher;
@@ -29,8 +32,13 @@ public class ScrapperClient {
             .uri("/api/links/{id}", chatId)
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
-            .bodyToMono(String.class)
-            .subscribe(response -> eventPublisher.publishEvent(new UpdateMessage(chatId, response)));
+            .bodyToMono(new ParameterizedTypeReference<List<Link>>() {
+            })
+            .subscribe(response -> {
+                String message = "Список отслеживаемых ссылок:\n" +
+                    response.stream().map(link -> "- " + link.url()).collect(Collectors.joining("\n"));
+                eventPublisher.publishEvent(new UpdateMessage(chatId, message));
+            });
     }
 
     public void sendLink(long chatId, Link link) {
@@ -63,7 +71,8 @@ public class ScrapperClient {
             .bodyValue(link)
             .retrieve()
             .bodyToMono(String.class)
-            .subscribe(response -> eventPublisher.publishEvent(new UpdateMessage(chatId, response)));
+            .subscribe(response -> eventPublisher.publishEvent(new UpdateMessage(chatId, response)),
+                error -> eventPublisher.publishEvent(new UpdateMessage(chatId, error.getMessage())));
     }
 
 }
