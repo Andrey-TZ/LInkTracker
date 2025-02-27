@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Repository
@@ -38,5 +39,10 @@ public class MapLinkRepository implements LinkRepository{
     @Override
     public List<Link> getLinks(long chatId) {
         return linkRepository.getOrDefault(chatId, new ArrayList<>());
+    }
+
+    @Override
+    public Set<Long> getUsers() {
+        return linkRepository.keySet();
     }
 }

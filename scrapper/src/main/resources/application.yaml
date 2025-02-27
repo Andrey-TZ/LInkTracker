@@ -1,5 +1,5 @@
 app:
-  github-token: ${GITHUB_TOKEN} # env variable
+  github-token: ${GITHUB_TOKEN}
   stackoverflow:
     key: ${SO_TOKEN_KEY}
     access-token: ${SO_ACCESS_TOKEN}

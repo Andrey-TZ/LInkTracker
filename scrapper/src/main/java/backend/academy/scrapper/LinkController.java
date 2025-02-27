@@ -1,7 +1,6 @@
 package backend.academy.scrapper;
 
 import backend.academy.common.Link;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +48,7 @@ public class LinkController {
 
     @DeleteMapping("/{chatId}")
     public ResponseEntity<String> deleteLink(@PathVariable("chatId") long chatId, @RequestBody Link link) {
-        if (mapLinkRepository.deleteLink(chatId, link)){
+        if (mapLinkRepository.deleteLink(chatId, link)) {
             return ResponseEntity.ok("Link has been deleted");
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("You don't track this link yet");
