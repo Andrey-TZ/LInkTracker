@@ -22,31 +22,36 @@ public class StackOerFlowClient implements APIClient {
     private final String key;
 
     @Autowired
-    public StackOerFlowClient(@Value("${app.stackoverflow.access-token}") String accessToken, @Value("${app.stackoverflow.key}") String key, BotClient botClient) {
-        this.webClient = WebClient
-            .builder()
-            .baseUrl("https://api.stackexchange.com/2.3/questions/")
-            .defaultHeader("Authorization", "Bearer " + accessToken)
-            .build();
+    public StackOerFlowClient(
+            @Value("${app.stackoverflow.access-token}") String accessToken,
+            @Value("${app.stackoverflow.key}") String key,
+            BotClient botClient) {
+        this.webClient = WebClient.builder()
+                .baseUrl("https://api.stackexchange.com/2.3/questions/")
+                .defaultHeader("Authorization", "Bearer " + accessToken)
+                .build();
         this.botClient = botClient;
         this.key = key;
     }
 
     public void getAnswers(String question, String date, String link, long chatId) {
-        webClient.get()
-            .uri(uriBuilder -> uriBuilder
-                .path("/{question}/answers")
-                .queryParam("fromdate", date)
-                .queryParam("site", "stackoverflow")
-                .queryParam("filter", ANSWERS_FILTER)
-                .queryParam("key", key)
-                .build(question))
-            .retrieve()
-            .bodyToMono(StackOverflowResponse.class)
-            .subscribe(response -> {
-                List<String> answers = response.items().stream().map(StackOverflowAnswer::message).collect(Collectors.toList());
-                botClient.sendUpdate(chatId, new Update(link, answers));
-            });
+        webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/{question}/answers")
+                        .queryParam("fromdate", date)
+                        .queryParam("site", "stackoverflow")
+                        .queryParam("filter", ANSWERS_FILTER)
+                        .queryParam("key", key)
+                        .build(question))
+                .retrieve()
+                .bodyToMono(StackOverflowResponse.class)
+                .subscribe(response -> {
+                    List<String> answers = response.items().stream()
+                            .map(StackOverflowAnswer::message)
+                            .collect(Collectors.toList());
+                    botClient.sendUpdate(chatId, new Update(link, answers));
+                });
     }
 
     @Override

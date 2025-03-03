@@ -19,25 +19,26 @@ public class GitHubClient implements APIClient {
     @Autowired
     public GitHubClient(@Value("${app.github-token}") String githubToken, BotClient botClient) {
         this.webClient = WebClient.builder()
-            .baseUrl("https://api.github.com/")
-            .defaultHeader("Authorization", "token " + githubToken)
-            .build();
+                .baseUrl("https://api.github.com/")
+                .defaultHeader("Authorization", "token " + githubToken)
+                .build();
         this.botClient = botClient;
     }
 
     public void getCommitMessages(String owner, String repo, String since, String link, long chatId) {
-        webClient.get()
-            .uri(uriBuilder -> uriBuilder
-                .path("/repos/{owner}/{repo}/commits")
-                .queryParam("since", since)
-                .build(owner, repo))
-            .retrieve()
-            .bodyToFlux(GitHubCommit.class)
-            .map(GitHubCommit::getMessage)
-            .collectList()
-            .subscribe(response -> botClient.sendUpdate(chatId, new Update(link, response))); // что потом делать с этим списком
+        webClient
+                .get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/repos/{owner}/{repo}/commits")
+                        .queryParam("since", since)
+                        .build(owner, repo))
+                .retrieve()
+                .bodyToFlux(GitHubCommit.class)
+                .map(GitHubCommit::getMessage)
+                .collectList()
+                .subscribe(response ->
+                        botClient.sendUpdate(chatId, new Update(link, response))); // что потом делать с этим списком
     }
-
 
     @Override
     public boolean getUpdates(long chatId, Link link) {
@@ -48,7 +49,12 @@ public class GitHubClient implements APIClient {
                 return false;
             }
             String[] path = uri.getPath().split("/");
-            getCommitMessages(path[1], path[2], link.date().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME), link.url(), chatId);
+            getCommitMessages(
+                    path[1],
+                    path[2],
+                    link.date().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME),
+                    link.url(),
+                    chatId);
             return true;
         } catch (URISyntaxException | IndexOutOfBoundsException e) {
             return false;

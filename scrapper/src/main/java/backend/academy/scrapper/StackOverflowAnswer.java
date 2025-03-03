@@ -9,5 +9,4 @@ public class StackOverflowAnswer {
     @Getter
     @JsonProperty("body_markdown")
     private String message;
-
 }

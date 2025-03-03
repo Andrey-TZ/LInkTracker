@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GitHubCommit {
-    @JsonProperty("commit")  // Соответствует "commit" в JSON
+    @JsonProperty("commit") // Соответствует "commit" в JSON
     private Commit commit;
 
     public String getMessage() {

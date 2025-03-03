@@ -17,9 +17,9 @@
 
     <modules>
         <module>bot</module>
+        <module>common</module>
         <module>report</module>
         <module>scrapper</module>
-        <module>common</module>
     </modules>
 
     <properties>

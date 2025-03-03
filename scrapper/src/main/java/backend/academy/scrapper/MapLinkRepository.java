@@ -1,18 +1,18 @@
 package backend.academy.scrapper;
 
 import backend.academy.common.Link;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
 
 @Slf4j
 @Repository
 @Primary
-public class MapLinkRepository implements LinkRepository{
+public class MapLinkRepository implements LinkRepository {
     private final HashMap<Long, List<Link>> linkRepository = new HashMap<>();
 
     @Override

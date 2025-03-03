@@ -10,18 +10,17 @@ public class BotClient {
     private final WebClient webClient;
 
     public BotClient() {
-        this.webClient = WebClient.builder()
-            .baseUrl("http://localhost:8080")
-            .build();
+        this.webClient = WebClient.builder().baseUrl("http://localhost:8080").build();
     }
 
     public void sendUpdate(long chatId, Update update) {
-        webClient.put()
-            .uri("/updates/{chatId}", chatId)
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue(update)
-            .retrieve()
-            .bodyToMono(String.class)
-            .subscribe();
+        webClient
+                .put()
+                .uri("/updates/{chatId}", chatId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(update)
+                .retrieve()
+                .bodyToMono(String.class)
+                .subscribe();
     }
 }

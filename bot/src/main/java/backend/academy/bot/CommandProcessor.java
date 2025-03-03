@@ -1,10 +1,10 @@
 package backend.academy.bot;
 
+import backend.academy.common.Link;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-import backend.academy.common.Link;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -13,12 +13,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommandProcessor {
     private static final String DOMAIN_REGEX = "^[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+
     @Getter
     private final Map<String, CommandWithInfo> commands = new HashMap<>();
+
     private final ScrapperClient scrapperClient;
     private final ApplicationEventPublisher eventPublisher;
 
-    public CommandProcessor(@Autowired ScrapperClient scrapperClient, @Autowired ApplicationEventPublisher eventPublisher) {
+    public CommandProcessor(
+            @Autowired ScrapperClient scrapperClient, @Autowired ApplicationEventPublisher eventPublisher) {
         this.scrapperClient = scrapperClient;
         this.eventPublisher = eventPublisher;
     }
@@ -74,9 +77,11 @@ public class CommandProcessor {
     }
 
     public void help(long chatId) {
-        eventPublisher.publishEvent(new UpdateMessage(chatId, "Доступные команды:\n" +
-            commands.values().stream()
-                .map(CommandWithInfo::getDescription)
-                .collect(Collectors.joining("\n"))));
+        eventPublisher.publishEvent(new UpdateMessage(
+                chatId,
+                "Доступные команды:\n"
+                        + commands.values().stream()
+                                .map(CommandWithInfo::getDescription)
+                                .collect(Collectors.joining("\n"))));
     }
 }

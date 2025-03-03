@@ -22,21 +22,25 @@ public class TelegramBotService {
     private final Map<Long, Set<String>> userLinks = new HashMap<>();
     private final Map<String, CommandWithInfo> commands;
 
-    public TelegramBotService(@Value("${app.telegram-token}") String botToken, @Autowired CommandProcessor commandProcessor) {
+    public TelegramBotService(
+            @Value("${app.telegram-token}") String botToken, @Autowired CommandProcessor commandProcessor) {
         this.bot = new TelegramBot(botToken);
-        commandProcessor.registerCommand("/start", (Long chatId, String args) -> commandProcessor.start(chatId),
-            "/start - регистрация пользователя");
-        commandProcessor.registerCommand("/track", commandProcessor::trackLink,
-            "/track [ссылка] - начать отслеживание ссылки");
-        commandProcessor.registerCommand("/untrack", commandProcessor::untrackLink,
-            "/untrack [ссылка] - прекратить отслеживание ссылки");
-        commandProcessor.registerCommand("/list", (Long chatId, String args) -> commandProcessor.list(chatId),
-            "/list - список отслеживаемых ссылок");
-        commandProcessor.registerCommand("/help", (Long chatId, String args) -> commandProcessor.help(chatId),
-            "/help - список команд");
+        commandProcessor.registerCommand(
+                "/start",
+                (Long chatId, String args) -> commandProcessor.start(chatId),
+                "/start - регистрация пользователя");
+        commandProcessor.registerCommand(
+                "/track", commandProcessor::trackLink, "/track [ссылка] - начать отслеживание ссылки");
+        commandProcessor.registerCommand(
+                "/untrack", commandProcessor::untrackLink, "/untrack [ссылка] - прекратить отслеживание ссылки");
+        commandProcessor.registerCommand(
+                "/list",
+                (Long chatId, String args) -> commandProcessor.list(chatId),
+                "/list - список отслеживаемых ссылок");
+        commandProcessor.registerCommand(
+                "/help", (Long chatId, String args) -> commandProcessor.help(chatId), "/help - список команд");
 
         commands = commandProcessor.commands();
-
     }
 
     @PostConstruct
@@ -68,6 +72,4 @@ public class TelegramBotService {
     public void handleUpdateMessage(UpdateMessage event) {
         bot.execute(new SendMessage(event.chatId(), event.message()));
     }
-
-
 }

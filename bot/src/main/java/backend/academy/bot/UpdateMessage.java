@@ -1,6 +1,5 @@
 package backend.academy.bot;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
@@ -16,6 +15,4 @@ public class UpdateMessage extends ApplicationEvent {
         this.chatId = chatId;
         this.message = message;
     }
-
 }
-
