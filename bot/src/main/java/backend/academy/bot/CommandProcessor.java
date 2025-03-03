@@ -28,9 +28,11 @@ public class CommandProcessor {
 
     public boolean processCommand(long chatId, String text) {
         try {
-            commands.get(text.split(" ")[0]).getCommand().execute(chatId, text);
+            CommandWithInfo command = commands.get(text.split(" ")[0]);
+            assert command != null;
+            command.getCommand().execute(chatId, text);
             return true;
-        } catch (ArrayIndexOutOfBoundsException | NullPointerException | ClassCastException e) {
+        } catch (ArrayIndexOutOfBoundsException | AssertionError | ClassCastException e) {
             return false;
         }
     }

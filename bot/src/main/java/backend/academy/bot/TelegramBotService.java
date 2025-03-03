@@ -53,8 +53,10 @@ public class TelegramBotService {
 
                     try {
                         // Вызов команды
-                        commands.get(text.split(" ")[0]).getCommand().execute(chatID, text);
-                    } catch (NullPointerException | ClassCastException e) {
+                        CommandWithInfo command = commands.get(text.split(" ")[0]);
+                        assert command != null;
+                        command.getCommand().execute(chatID, text);
+                    } catch (AssertionError | ArrayIndexOutOfBoundsException | ClassCastException e) {
                         sendMessage(chatID, "Неизвестная команда. Используйте /help для списка доступных команд.");
                     }
                 }
