@@ -48,9 +48,7 @@ public class LinkController {
 
     @DeleteMapping("/{chatId}")
     public ResponseEntity<String> deleteLink(@PathVariable("chatId") long chatId, @RequestBody Link link) {
-        if (mapLinkRepository.deleteLink(chatId, link)) {
-            return ResponseEntity.ok("Link has been deleted");
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("You don't track this link yet");
+        mapLinkRepository.deleteLink(chatId, link);
+        return ResponseEntity.ok("Link has been deleted");
     }
 }

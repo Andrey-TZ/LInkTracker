@@ -30,6 +30,6 @@ public class LinkControllerExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGeneralException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body("Внутренняя ошибка сервера: " + ex.getMessage());
+                .body("Внутренняя ошибка сервера: " + ex.getMessage());
     }
 }
