@@ -9,9 +9,11 @@ public interface LinkRepository {
 
     void addLink(long chatId, Link link);
 
-    boolean deleteLink(long chatId, Link link);
+    void deleteLink(long chatId, Link link);
 
     List<Link> getLinks(long chatId);
 
     Set<Long> getUsers();
+
+    boolean userExists(long chatId);
 }

@@ -1,6 +1,10 @@
 package backend.academy.scrapper;
 
 import backend.academy.common.Link;
+import backend.academy.scrapper.exceptions.LinkAlreadyExistsException;
+import backend.academy.scrapper.exceptions.LinkNotFoundException;
+import backend.academy.scrapper.exceptions.UserNotFoundException;
+import backend.academy.scrapper.exceptions.ValidationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,32 +21,51 @@ public class MapLinkRepository implements LinkRepository {
 
     @Override
     public void addUser(long chatId) {
-        linkRepository.putIfAbsent(chatId, new ArrayList<>());
+        if (userExists(chatId)) {
+            throw new ValidationException("Пользователь уже существует");
+        }
+        linkRepository.put(chatId, new ArrayList<>());
     }
 
     @Override
     public void addLink(long chatId, Link link) {
-        linkRepository.putIfAbsent(chatId, new ArrayList<>());
+        if (!userExists(chatId)) {
+            throw new UserNotFoundException("Пользователь не найден");
+        }
         List<Link> links = linkRepository.get(chatId);
+        if (links.contains(link)) {
+            throw new LinkAlreadyExistsException("Ссылка уже отслеживается");
+        }
         links.add(link);
     }
 
     @Override
-    public boolean deleteLink(long chatId, Link link) {
-        linkRepository.putIfAbsent(chatId, new ArrayList<>());
+    public void deleteLink(long chatId, Link link) {
+        if (!linkRepository.containsKey(chatId)) {
+            throw new UserNotFoundException("Пользователь не найден");
+        }
         List<Link> links = linkRepository.get(chatId);
-        boolean result = links.remove(link);
-        log.info("delete link {}", result);
-        return result;
+        if (!links.contains(link)) {
+            throw new LinkNotFoundException("Ссылка не отслеживается ");
+        }
+        links.remove(link);
     }
 
     @Override
     public List<Link> getLinks(long chatId) {
-        return linkRepository.getOrDefault(chatId, new ArrayList<>());
+        if (!linkRepository.containsKey(chatId)) {
+            throw new UserNotFoundException("Пользователь с chatId " + chatId + " не найден");
+        }
+        return linkRepository.get(chatId);
     }
 
     @Override
     public Set<Long> getUsers() {
         return linkRepository.keySet();
+    }
+
+    @Override
+    public boolean userExists(long chatId) {
+        return linkRepository.containsKey(chatId);
     }
 }

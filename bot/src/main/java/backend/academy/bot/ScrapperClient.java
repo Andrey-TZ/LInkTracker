@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
@@ -25,53 +28,74 @@ public class ScrapperClient {
 
     public void getLinks(long chatId) {
         webClient
-                .get()
-                .uri("/api/links/{id}", chatId)
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<Link>>() {})
-                .subscribe(response -> {
+            .get()
+            .uri("/api/links/{id}", chatId)
+            .accept(MediaType.APPLICATION_JSON)
+            .retrieve()
+            .onStatus(HttpStatusCode::is4xxClientError,
+                response -> Mono.error(new ClientException("Ошибка клиента: " + response.statusCode())))
+            .bodyToMono(new ParameterizedTypeReference<List<Link>>() {
+            })
+            .subscribe(response -> {
                     String message = "Список отслеживаемых ссылок:\n"
-                            + response.stream().map(link -> "- " + link.url()).collect(Collectors.joining("\n"));
+                        + response.stream().map(link -> "- " + link.url()).collect(Collectors.joining("\n"));
                     eventPublisher.publishEvent(new UpdateMessage(chatId, message));
+                },
+                error -> {
+                    log.error("Ошибка при отправке ссылки: {}", error.getMessage());
+                    eventPublisher.publishEvent(new UpdateMessage(chatId, "Не удалось отправить ссылку: " + error.getMessage()));
                 });
     }
 
     public void sendLink(long chatId, Link link) {
         webClient
-                .post()
-                .uri("/api/links/{id}", chatId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(link)
-                .retrieve()
-                .bodyToMono(String.class)
-                .subscribe(
-                        response -> {
-                            eventPublisher.publishEvent(new UpdateMessage(chatId, response));
-                            log.info(response);
-                        },
-                        error -> log.error("ОШИБКА"));
+            .post()
+            .uri("/api/links/{id}", chatId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(link)
+            .retrieve()
+            .onStatus(HttpStatusCode::is4xxClientError,
+                response -> Mono.error(new ClientException("Ошибка клиента при отправке ссылки: " + response.statusCode())))
+            .bodyToMono(String.class)
+            .subscribe(
+                response -> {
+                    eventPublisher.publishEvent(new UpdateMessage(chatId, response));
+                    log.info(response);
+                },
+                error -> {
+                    log.error("ОШИБКА");
+                    eventPublisher.publishEvent(new UpdateMessage(chatId, "Не удалось отправить ссылку: " + error.getMessage()));
+                });
     }
 
     public void addUser(long chatId) {
         webClient
-                .put()
-                .uri("/api/links/adduser/{chatId}", chatId)
-                .retrieve()
-                .bodyToMono(String.class)
-                .subscribe(response -> eventPublisher.publishEvent(new UpdateMessage(chatId, response)));
+            .put()
+            .uri("/api/links/adduser/{chatId}", chatId)
+            .retrieve()
+            .onStatus(HttpStatusCode::is4xxClientError, response ->
+                Mono.error(new ClientException("Ошибка клиента при добавлении пользователя: " + response.statusCode()))
+            )
+            .bodyToMono(String.class)
+            .subscribe(response -> eventPublisher.publishEvent(new UpdateMessage(chatId, response)),
+                error -> {
+                    log.error("Ошибка при добавлении пользователя: {}", error.getMessage());
+                    eventPublisher.publishEvent(new UpdateMessage(chatId, "Не удалось добавить пользователя: " + error.getMessage()));
+                });
     }
 
     public void deleteLink(long chatId, Link link) {
         webClient
-                .method(HttpMethod.DELETE)
-                .uri("/api/links/{chatId}", chatId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(link)
-                .retrieve()
-                .bodyToMono(String.class)
-                .subscribe(
-                        response -> eventPublisher.publishEvent(new UpdateMessage(chatId, response)),
-                        error -> eventPublisher.publishEvent(new UpdateMessage(chatId, error.getMessage())));
+            .method(HttpMethod.DELETE)
+            .uri("/api/links/{chatId}", chatId)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(link)
+            .retrieve()
+            .onStatus(HttpStatusCode::is4xxClientError,
+                response -> Mono.error(new ClientException("Ошибка клиента при удалении ссылки: " + response.statusCode())))
+            .bodyToMono(String.class)
+            .subscribe(
+                response -> eventPublisher.publishEvent(new UpdateMessage(chatId, response)),
+                error -> eventPublisher.publishEvent(new UpdateMessage(chatId, "Не удалось удалить ссылку: " + error.getMessage())));
     }
 }
