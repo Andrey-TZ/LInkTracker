@@ -26,11 +26,10 @@ public class CommandProcessor {
     private final ApplicationEventPublisher eventPublisher;
 
     public CommandProcessor(
-        @Autowired ScrapperClient scrapperClient, @Autowired ApplicationEventPublisher eventPublisher) {
+            @Autowired ScrapperClient scrapperClient, @Autowired ApplicationEventPublisher eventPublisher) {
         this.scrapperClient = scrapperClient;
         this.eventPublisher = eventPublisher;
     }
-
 
     public void registerCommand(String name, Command command, String description, boolean isRequireArgs) {
         commands.put(name, new CommandWithInfo(command, description, isRequireArgs));
@@ -57,7 +56,7 @@ public class CommandProcessor {
                 eventPublisher.publishEvent(new UpdateMessage(chatId, "Введите валидную ссылку"));
             }
         } catch (IllegalArgumentException e) {
-            log.error(e.getMessage());
+            log.error("Неверный формант аргумента команды /track: {}", e.getMessage());
             eventPublisher.publishEvent(new UpdateMessage(chatId, "Введите валидную ссылку"));
         }
     }
@@ -76,10 +75,10 @@ public class CommandProcessor {
 
     public void help(long chatId) {
         eventPublisher.publishEvent(new UpdateMessage(
-            chatId,
-            "Доступные команды:\n"
-                + commands.values().stream()
-                .map(CommandWithInfo::description)
-                .collect(Collectors.joining("\n"))));
+                chatId,
+                "Доступные команды:\n"
+                        + commands.values().stream()
+                                .map(CommandWithInfo::description)
+                                .collect(Collectors.joining("\n"))));
     }
 }

@@ -1,9 +1,8 @@
 package backend.academy.scrapper;
 
 import backend.academy.common.Link;
-import java.util.List;
-import java.util.Set;
 import backend.academy.scrapper.data.LinkRepository;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

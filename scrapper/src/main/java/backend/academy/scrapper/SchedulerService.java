@@ -1,14 +1,13 @@
 package backend.academy.scrapper;
 
 import backend.academy.common.Link;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import backend.academy.scrapper.clients.APIClient;
 import backend.academy.scrapper.clients.GitHubClient;
 import backend.academy.scrapper.clients.StackOerFlowClient;
 import backend.academy.scrapper.data.LinkRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

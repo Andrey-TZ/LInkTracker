@@ -28,27 +28,25 @@ public class TelegramBotService {
     private final Map<String, CommandWithInfo> commands;
     private final Map<Long, UserContext> userContexts = new HashMap<>();
 
-
     public TelegramBotService(
-        @Value("${app.telegram-token}") String botToken, @Autowired CommandProcessor commandProcessor) {
+            @Value("${app.telegram-token}") String botToken, @Autowired CommandProcessor commandProcessor) {
         this.bot = new TelegramBot(botToken);
         commandProcessor.registerCommand(
-            "/start",
-            (Long chatId, String[] args) -> commandProcessor.start(chatId),
-            "/start - регистрация пользователя", false);
+                "/start",
+                (Long chatId, String[] args) -> commandProcessor.start(chatId),
+                "/start - регистрация пользователя",
+                false);
         commandProcessor.registerCommand(
-            "/track", commandProcessor::trackLink, "/track [ссылка] - начать отслеживание ссылки",
-            true);
+                "/track", commandProcessor::trackLink, "/track [ссылка] - начать отслеживание ссылки", true);
         commandProcessor.registerCommand(
-            "/untrack", commandProcessor::untrackLink, "/untrack [ссылка] - прекратить отслеживание ссылки",
-            true);
+                "/untrack", commandProcessor::untrackLink, "/untrack [ссылка] - прекратить отслеживание ссылки", true);
         commandProcessor.registerCommand(
-            "/list",
-            (Long chatId, String[] args) -> commandProcessor.list(chatId),
-            "/list - список отслеживаемых ссылок", false);
+                "/list",
+                (Long chatId, String[] args) -> commandProcessor.list(chatId),
+                "/list - список отслеживаемых ссылок",
+                false);
         commandProcessor.registerCommand(
-            "/help", (Long chatId, String[] args) -> commandProcessor.help(chatId), "/help - список команд",
-            false);
+                "/help", (Long chatId, String[] args) -> commandProcessor.help(chatId), "/help - список команд", false);
         log.info("Commands are registered");
         commands = commandProcessor.commands();
     }
@@ -101,7 +99,9 @@ public class TelegramBotService {
                                         }
                                         break;
                                     default:
-                                        sendMessage(chatId, "Неизвестная команда. Используйте /help для списка доступных команд.");
+                                        sendMessage(
+                                                chatId,
+                                                "Неизвестная команда. Используйте /help для списка доступных команд.");
                                         break;
                                 }
                             }
@@ -157,7 +157,6 @@ public class TelegramBotService {
         userContexts.put(chatId, context);
     }
 
-
     public void sendMessage(long chatId, String text) {
         bot.execute(new SendMessage(chatId, text));
     }
@@ -169,15 +168,16 @@ public class TelegramBotService {
     }
 
     enum DialogState {
-        AWAITING_COMMAND,                  // Пользователь не в диалоге
-        AWAITING_LINK,   // Ожидание ссылки для /track и /untrack
-        AWAITING_TAGS,   // Ожидание тегов для /track
+        AWAITING_COMMAND, // Пользователь не в диалоге
+        AWAITING_LINK, // Ожидание ссылки для /track и /untrack
+        AWAITING_TAGS, // Ожидание тегов для /track
     }
 
     @Getter
     class UserContext {
         @Setter
         private DialogState state;
+
         private final Map<String, String> params = new HashMap<>();
         private List<String> args = new ArrayList<>();
         private String commandName;

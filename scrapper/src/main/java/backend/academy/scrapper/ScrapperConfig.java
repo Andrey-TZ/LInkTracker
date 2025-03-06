@@ -11,13 +11,12 @@ import org.springframework.validation.annotation.Validated;
 @EnableScheduling
 @ConfigurationProperties(prefix = "app", ignoreUnknownFields = false)
 public record ScrapperConfig(@NotEmpty String githubToken, StackOverflowCredentials stackOverflow) {
-    public record StackOverflowCredentials(@NotEmpty String key, @NotEmpty String accessToken) {
-    }
+    public record StackOverflowCredentials(@NotEmpty String key, @NotEmpty String accessToken) {}
 
     @Bean
     public ThreadPoolTaskScheduler taskScheduler() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-        scheduler.setPoolSize(5);  // Количество потоков
+        scheduler.setPoolSize(5); // Количество потоков
         scheduler.setThreadNamePrefix("MyScheduler-");
         scheduler.initialize();
         return scheduler;

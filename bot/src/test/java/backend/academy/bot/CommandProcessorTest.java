@@ -5,9 +5,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.Objects;
-
 import backend.academy.bot.model.UpdateMessage;
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,8 +29,8 @@ class CommandProcessorTest {
 
     @ParameterizedTest
     @ValueSource(
-        strings = {"https://github.com/user/repo", "https://stackoverflow.com/questions/12345", "http://example.com"
-        })
+            strings = {"https://github.com/user/repo", "https://stackoverflow.com/questions/12345", "http://example.com"
+            })
     void trackLink_Valid(String url) {
         Long chatId = 10100L;
         String[] command = {"\track ", url, "valid"};
@@ -39,7 +38,7 @@ class CommandProcessorTest {
         commandProcessor.trackLink(chatId, command);
 
         verify(scrapperClient, times(1))
-            .sendLink(eq(chatId), argThat(link -> link.url().equals(url)));
+                .sendLink(eq(chatId), argThat(link -> link.url().equals(url)));
     }
 
     @ParameterizedTest
