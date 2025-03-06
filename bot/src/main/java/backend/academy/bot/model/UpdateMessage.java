@@ -1,4 +1,4 @@
-package backend.academy.bot;
+package backend.academy.bot.model;
 
 import lombok.Getter;
 import lombok.Setter;

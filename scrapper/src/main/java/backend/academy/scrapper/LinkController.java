@@ -2,6 +2,8 @@ package backend.academy.scrapper;
 
 import backend.academy.common.Link;
 import java.util.List;
+import java.util.Set;
+import backend.academy.scrapper.data.LinkRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +12,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,17 +33,16 @@ public class LinkController {
         return ResponseEntity.ok("Link was added successfully");
     }
 
-    @PutMapping("/adduser/{chatId}")
+    @PostMapping("/adduser/{chatId}")
     public ResponseEntity<String> addUser(@PathVariable("chatId") long chatId) {
-        log.info("put запрос {}", chatId);
         // Добавление пользователя в общий репозиторий
         mapLinkRepository.addUser(chatId);
         return ResponseEntity.status(HttpStatus.CREATED).body("User was added");
     }
 
     @GetMapping("/{chatId}")
-    public ResponseEntity<List<Link>> getLinks(@PathVariable("chatId") long chatId) {
-        List<Link> links = mapLinkRepository.getLinks(chatId);
+    public ResponseEntity<Set<Link>> getLinks(@PathVariable("chatId") long chatId) {
+        Set<Link> links = mapLinkRepository.getLinks(chatId);
         return ResponseEntity.status(HttpStatus.FOUND).body(links);
     }
 

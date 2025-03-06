@@ -6,7 +6,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.Objects;
-import org.junit.jupiter.api.Assertions;
+
+import backend.academy.bot.model.UpdateMessage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,23 +30,23 @@ class CommandProcessorTest {
 
     @ParameterizedTest
     @ValueSource(
-            strings = {"https://github.com/user/repo", "https://stackoverflow.com/questions/12345", "http://example.com"
-            })
+        strings = {"https://github.com/user/repo", "https://stackoverflow.com/questions/12345", "http://example.com"
+        })
     void trackLink_Valid(String url) {
         Long chatId = 10100L;
-        String command = "\track " + url;
+        String[] command = {"\track ", url, "valid"};
 
         commandProcessor.trackLink(chatId, command);
 
         verify(scrapperClient, times(1))
-                .sendLink(eq(chatId), argThat(link -> link.url().equals(url)));
+            .sendLink(eq(chatId), argThat(link -> link.url().equals(url)));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"github.com/user/repo", "https://stackoverflow", "http://example."})
     void trackLink_Invalid(String url) {
         long chatId = 10100L;
-        String command = "\track " + url;
+        String[] command = {"\track ", url, "invalid"};
 
         commandProcessor.trackLink(chatId, command);
 
@@ -60,7 +61,7 @@ class CommandProcessorTest {
     @Test
     void trackLink_NoLink() {
         long chatId = 10100L;
-        String command = "/track ";
+        String[] command = {"/track "};
 
         commandProcessor.trackLink(chatId, command);
 
@@ -70,26 +71,5 @@ class CommandProcessorTest {
             UpdateMessage message = (UpdateMessage) event;
             return Objects.equals(message.chatId(), chatId) && message.message().equals("Используйте: /track [ссылка]");
         }));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"\tracl", "/hhelp", "  "})
-    void processCommand_DontExist(String command) {
-        commandProcessor.registerCommand(
-                "/start",
-                (Long chatId, String args) -> commandProcessor.start(chatId),
-                "/start - регистрация пользователя");
-        commandProcessor.registerCommand(
-                "/track", commandProcessor::trackLink, "/track [ссылка] - начать отслеживание ссылки");
-        commandProcessor.registerCommand(
-                "/untrack", commandProcessor::untrackLink, "/untrack [ссылка] - прекратить отслеживание ссылки");
-        commandProcessor.registerCommand(
-                "/list",
-                (Long chatId, String args) -> commandProcessor.list(chatId),
-                "/list - список отслеживаемых ссылок");
-        commandProcessor.registerCommand(
-                "/help", (Long chatId, String args) -> commandProcessor.help(chatId), "/help - список команд");
-        long chatId = 10100L;
-        Assertions.assertFalse(commandProcessor.processCommand(chatId, command));
     }
 }

@@ -1,5 +1,6 @@
 package backend.academy.bot;
 
+import backend.academy.bot.model.UpdateMessage;
 import backend.academy.common.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;

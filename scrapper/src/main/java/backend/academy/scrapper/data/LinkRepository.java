@@ -1,7 +1,6 @@
-package backend.academy.scrapper;
+package backend.academy.scrapper.data;
 
 import backend.academy.common.Link;
-import java.util.List;
 import java.util.Set;
 
 public interface LinkRepository {
@@ -11,7 +10,7 @@ public interface LinkRepository {
 
     void deleteLink(long chatId, Link link);
 
-    List<Link> getLinks(long chatId);
+    Set<Link> getLinks(long chatId);
 
     Set<Long> getUsers();
 

@@ -1,13 +1,12 @@
-package backend.academy.scrapper;
+package backend.academy.scrapper.data;
 
 import backend.academy.common.Link;
 import backend.academy.scrapper.exceptions.LinkAlreadyExistsException;
 import backend.academy.scrapper.exceptions.LinkNotFoundException;
+import backend.academy.scrapper.exceptions.UserAlreadyExistsException;
 import backend.academy.scrapper.exceptions.UserNotFoundException;
-import backend.academy.scrapper.exceptions.ValidationException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
@@ -17,14 +16,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Primary
 public class MapLinkRepository implements LinkRepository {
-    private final HashMap<Long, List<Link>> linkRepository = new HashMap<>();
+    private final HashMap<Long, Set<Link>> linkRepository = new HashMap<>();
 
     @Override
     public void addUser(long chatId) {
         if (userExists(chatId)) {
-            throw new ValidationException("Пользователь уже существует");
+            throw new UserAlreadyExistsException("Пользователь уже существует");
         }
-        linkRepository.put(chatId, new ArrayList<>());
+        linkRepository.put(chatId, new HashSet<>());
     }
 
     @Override
@@ -32,7 +31,7 @@ public class MapLinkRepository implements LinkRepository {
         if (!userExists(chatId)) {
             throw new UserNotFoundException("Пользователь не найден");
         }
-        List<Link> links = linkRepository.get(chatId);
+        Set<Link> links = linkRepository.get(chatId);
         if (links.contains(link)) {
             throw new LinkAlreadyExistsException("Ссылка уже отслеживается");
         }
@@ -44,7 +43,7 @@ public class MapLinkRepository implements LinkRepository {
         if (!linkRepository.containsKey(chatId)) {
             throw new UserNotFoundException("Пользователь не найден");
         }
-        List<Link> links = linkRepository.get(chatId);
+        Set<Link> links = linkRepository.get(chatId);
         if (!links.contains(link)) {
             throw new LinkNotFoundException("Ссылка не отслеживается ");
         }
@@ -52,7 +51,7 @@ public class MapLinkRepository implements LinkRepository {
     }
 
     @Override
-    public List<Link> getLinks(long chatId) {
+    public Set<Link> getLinks(long chatId) {
         if (!linkRepository.containsKey(chatId)) {
             throw new UserNotFoundException("Пользователь с chatId " + chatId + " не найден");
         }
