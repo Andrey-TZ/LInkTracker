@@ -27,6 +27,11 @@ public class LinkController {
 
     @PostMapping("/{chatId}")
     public ResponseEntity<String> addLink(@PathVariable("chatId") long chatId, @RequestBody Link link) {
+        log.atDebug()
+                .setMessage("Добавление ссылки")
+                .addKeyValue("user", chatId)
+                .addKeyValue("link", link)
+                .log();
         // Добавление ссылки в репозиторий пользователя
         mapLinkRepository.addLink(chatId, link);
         return ResponseEntity.ok("Link was added successfully");
@@ -34,6 +39,10 @@ public class LinkController {
 
     @PostMapping("/adduser/{chatId}")
     public ResponseEntity<String> addUser(@PathVariable("chatId") long chatId) {
+        log.atDebug()
+                .setMessage("Создание пользователя")
+                .addKeyValue("user", chatId)
+                .log();
         // Добавление пользователя в общий репозиторий
         mapLinkRepository.addUser(chatId);
         return ResponseEntity.status(HttpStatus.CREATED).body("User was added");
@@ -41,12 +50,21 @@ public class LinkController {
 
     @GetMapping("/{chatId}")
     public ResponseEntity<Set<Link>> getLinks(@PathVariable("chatId") long chatId) {
+        log.atDebug()
+                .setMessage("Отправка отслеживаемых ссылок")
+                .addKeyValue("user", chatId)
+                .log();
         Set<Link> links = mapLinkRepository.getLinks(chatId);
         return ResponseEntity.status(HttpStatus.FOUND).body(links);
     }
 
     @DeleteMapping("/{chatId}")
     public ResponseEntity<String> deleteLink(@PathVariable("chatId") long chatId, @RequestBody Link link) {
+        log.atDebug()
+                .setMessage("Удаление ссылки")
+                .addKeyValue("user", chatId)
+                .addKeyValue("link", link)
+                .log();
         mapLinkRepository.deleteLink(chatId, link);
         return ResponseEntity.ok("Link has been deleted");
     }

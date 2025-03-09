@@ -47,43 +47,65 @@ public class TelegramBotService {
                 false);
         commandProcessor.registerCommand(
                 "/help", (Long chatId, String[] args) -> commandProcessor.help(chatId), "/help - список команд", false);
-        log.info("Commands are registered");
+        log.atInfo().setMessage("Команды зарегистрированы").log();
         commands = commandProcessor.commands();
     }
 
     @PostConstruct
     public void start() {
         bot.setUpdatesListener(updates -> {
+            log.atInfo().setMessage("Начато слушание сообщений").log();
             for (Update update : updates) {
                 if (update.message() != null && update.message().text() != null) {
                     long chatId = update.message().chat().id();
                     String[] args = update.message().text().trim().split(" ");
                     if (!userContexts.containsKey(chatId)) {
                         userContexts.put(chatId, new UserContext(DialogState.AWAITING_COMMAND));
-                        log.info("Dialog was started");
+                        log.atInfo()
+                                .setMessage("Начат диалог с пользователем")
+                                .addKeyValue("user", chatId)
+                                .log();
                     }
                     UserContext context = userContexts.get(chatId);
                     if (context.state() == DialogState.AWAITING_COMMAND) {
                         try {
-                            log.info("args {}", Arrays.toString(args));
                             String commandName = args[0];
                             CommandWithInfo command = commands.get(commandName);
                             if (command == null) {
                                 throw new IllegalArgumentException("Команда не может быть null");
                             }
                             if (!command.isRequireArgs()) {
+                                log.atDebug()
+                                        .setMessage("Команда без аргументов вызвана")
+                                        .addKeyValue("command", commandName)
+                                        .log();
                                 command.command().execute(chatId, args);
                             } else {
                                 switch (commandName) {
                                     case "/track":
                                         if (args.length > 2) {
+                                            log.atDebug()
+                                                    .setMessage("Команда передана сразу с аргументами и вызвана")
+                                                    .addKeyValue("user", chatId)
+                                                    .addKeyValue("command", commandName)
+                                                    .addKeyValue("link", args[1])
+                                                    .addKeyValue("tag", args[2])
+                                                    .log();
                                             commands.get(commandName).command().execute(chatId, args);
                                         } else if (args.length == 2) {
+                                            log.atDebug()
+                                                    .setMessage("Ожидание ввода тегов")
+                                                    .addKeyValue("user", chatId)
+                                                    .log();
                                             context.commandName(commandName);
                                             context.state(DialogState.AWAITING_TAGS);
                                             context.addArg(args[1]);
                                             sendMessage(chatId, "Введите теги");
                                         } else {
+                                            log.atDebug()
+                                                    .setMessage("Ожидание ввода ссылки для отслеживания")
+                                                    .addKeyValue("user", chatId)
+                                                    .log();
                                             context.commandName(commandName);
                                             context.state(DialogState.AWAITING_LINK);
                                             sendMessage(chatId, "Введите ссылку");
@@ -91,14 +113,32 @@ public class TelegramBotService {
                                         break;
                                     case "/unrack":
                                         if (args.length == 2) {
+                                            log.atDebug()
+                                                    .setMessage("Команда передана сразу с аргументами и вызвана")
+                                                    .addKeyValue("user", chatId)
+                                                    .addKeyValue("command", commandName)
+                                                    .addKeyValue("link", args[1])
+                                                    .log();
                                             commands.get(commandName).command().execute(chatId, args);
                                         } else {
+                                            log.atDebug()
+                                                    .setMessage("Ожидание ввода ссылки для прекращения отслеживания")
+                                                    .addKeyValue("user", chatId)
+                                                    .log();
+                                            context.commandName(commandName);
+                                            context.state(DialogState.AWAITING_LINK);
                                             context.commandName(commandName);
                                             context.state(DialogState.AWAITING_LINK);
                                             sendMessage(chatId, "Введите ссылку");
                                         }
                                         break;
                                     default:
+                                        log.atWarn()
+                                                .setMessage("Неизвестное состояние")
+                                                .addKeyValue("user", chatId)
+                                                .addKeyValue("command", commandName)
+                                                .addKeyValue("state", context.state)
+                                                .log();
                                         sendMessage(
                                                 chatId,
                                                 "Неизвестная команда. Используйте /help для списка доступных команд.");
@@ -106,6 +146,11 @@ public class TelegramBotService {
                                 }
                             }
                         } catch (IllegalArgumentException | ArrayIndexOutOfBoundsException | ClassCastException e) {
+                            log.atWarn()
+                                    .setMessage("Неизвестная команда")
+                                    .addKeyValue("user", chatId)
+                                    .addKeyValue("args", args)
+                                    .log();
                             sendMessage(chatId, "Неизвестная команда. Используйте /help для списка доступных команд.");
                         }
                     } else {
@@ -113,12 +158,19 @@ public class TelegramBotService {
                     }
                 }
             }
+            log.atInfo().setMessage("Прослушивание завершено").log();
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
     }
 
     void handleDialogStep(long chatId, String[] args, UserContext context) {
-        switch (context.state) {
+        log.atDebug()
+                .setMessage("Обработка состояния")
+                .addKeyValue("user", chatId)
+                .addKeyValue("command", context.commandName())
+                .addKeyValue("state", context.state())
+                .log();
+        switch (context.state()) {
             case AWAITING_LINK:
                 if (args.length < 1) {
                     sendMessage(chatId, "Введите ссылку");

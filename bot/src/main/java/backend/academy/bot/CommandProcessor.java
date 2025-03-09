@@ -52,16 +52,24 @@ public class CommandProcessor {
             if (uri.isAbsolute() && uri.getScheme() != null && host != null && host.matches(DOMAIN_REGEX)) {
                 scrapperClient.sendLink(chatId, new Link(link, tags));
             } else {
+                log.atWarn()
+                        .setMessage("Невалидная ссылка")
+                        .addKeyValue("url", uri)
+                        .log();
                 log.info("Введена невалидная ссылка");
                 eventPublisher.publishEvent(new UpdateMessage(chatId, "Введите валидную ссылку"));
             }
         } catch (IllegalArgumentException e) {
-            log.error("Неверный формант аргумента команды /track: {}", e.getMessage());
+            log.atError()
+                    .setMessage("Неверный формант аргумента команды /track")
+                    .addKeyValue("args", args)
+                    .log();
             eventPublisher.publishEvent(new UpdateMessage(chatId, "Введите валидную ссылку"));
         }
     }
 
     public void untrackLink(long chatId, String[] args) {
+        log.atDebug().setMessage("Вызвана команда /untrack").log();
         if (args.length < 2) {
             eventPublisher.publishEvent(new UpdateMessage(chatId, "Используйте: /untrack [ссылка]"));
             return;
