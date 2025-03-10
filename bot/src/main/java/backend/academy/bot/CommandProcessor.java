@@ -1,9 +1,9 @@
 package backend.academy.bot;
 
-import backend.academy.bot.model.Command;
 import backend.academy.bot.model.CommandWithInfo;
 import backend.academy.bot.model.UpdateMessage;
 import backend.academy.common.Link;
+import jakarta.annotation.PostConstruct;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,10 +29,6 @@ public class CommandProcessor {
             @Autowired ScrapperClient scrapperClient, @Autowired ApplicationEventPublisher eventPublisher) {
         this.scrapperClient = scrapperClient;
         this.eventPublisher = eventPublisher;
-    }
-
-    public void registerCommand(String name, Command command, String description, boolean isRequireArgs) {
-        commands.put(name, new CommandWithInfo(command, description, isRequireArgs));
     }
 
     public void start(long chatId) {
@@ -88,5 +84,26 @@ public class CommandProcessor {
                         + commands.values().stream()
                                 .map(CommandWithInfo::description)
                                 .collect(Collectors.joining("\n"))));
+    }
+
+    @PostConstruct
+    private void registrateCommands() {
+        commands.put(
+                "/start",
+                new CommandWithInfo(
+                        (Long chatId, String[] args) -> start(chatId), "/start - регистрация пользователя", false));
+        commands.put(
+                "/track", new CommandWithInfo(this::trackLink, "/track [ссылка] - начать отслеживание ссылки", true));
+        commands.put(
+                "/untrack",
+                new CommandWithInfo(this::untrackLink, "/untrack [ссылка] - прекратить отслеживание ссылки", true));
+        commands.put(
+                "/list",
+                new CommandWithInfo(
+                        (Long chatId, String[] args) -> list(chatId), "/list - список отслеживаемых ссылок", false));
+        commands.put(
+                "/help",
+                new CommandWithInfo((Long chatId, String[] args) -> help(chatId), "/help - список команд", false));
+        log.atInfo().setMessage("Команды зарегистрированы").log();
     }
 }
