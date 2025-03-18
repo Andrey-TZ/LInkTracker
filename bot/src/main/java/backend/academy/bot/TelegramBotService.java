@@ -5,11 +5,16 @@ import backend.academy.bot.model.UpdateMessage;
 import backend.academy.bot.model.UserContext;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
+import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SetMyCommands;
+import com.pengrad.telegrambot.response.BaseResponse;
 import jakarta.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +34,24 @@ public class TelegramBotService {
             @Value("${app.telegram-token}") String botToken, @Autowired CommandProcessor commandProcessor) {
         this.bot = new TelegramBot(botToken);
         commands = commandProcessor.commands();
+        registerCommands();
+    }
+
+    private void registerCommands() {
+        List<BotCommand> botCommandsList = new ArrayList<>();
+        for (String command : commands.keySet()) {
+            botCommandsList.add(new BotCommand(command, commands.get(command).description()));
+        }
+        BotCommand[] botCommandsArray = botCommandsList.toArray(new BotCommand[0]);
+        BaseResponse response = bot.execute(new SetMyCommands(botCommandsArray));
+
+        if (response.isOk()) {
+            log.atInfo().setMessage("Команды зарегистрированы в боте").log();
+        } else {
+            log.atError()
+                    .setMessage("Не удалось зарегистрировать команды в боте")
+                    .log();
+        }
     }
 
     @PostConstruct

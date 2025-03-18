@@ -66,20 +66,19 @@ class MapLinkRepositoryTest {
         repository.addLink(chatId, link);
         Set<Link> links = repository.getLinks(chatId);
         Iterator<Link> iterator = links.iterator();
-        Link link_gotten = iterator.next();
 
-        Assertions.assertEquals(link, link_gotten);
+        Assertions.assertEquals(link, iterator.next());
     }
 
     @Test
     void addLink_delete() {
         long chatId = 10L;
         Link link = new Link("https://stackoverflow.com/", new String[] {"job"});
-        Link link_to_delete = new Link("https://stackoverflow.com/");
+        Link linkToDelete = new Link("https://stackoverflow.com/");
 
         repository.addUser(chatId);
         repository.addLink(chatId, link);
-        repository.deleteLink(chatId, link_to_delete);
+        repository.deleteLink(chatId, linkToDelete);
 
         Assertions.assertTrue(repository.getLinks(chatId).isEmpty());
     }
