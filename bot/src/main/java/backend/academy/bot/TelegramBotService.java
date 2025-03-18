@@ -39,8 +39,9 @@ public class TelegramBotService {
 
     private void registerCommands() {
         List<BotCommand> botCommandsList = new ArrayList<>();
-        for (String command : commands.keySet()) {
-            botCommandsList.add(new BotCommand(command, commands.get(command).description()));
+        for (Map.Entry<String, CommandWithInfo> command : commands.entrySet()) {
+            botCommandsList.add(
+                    new BotCommand(command.getKey(), command.getValue().description()));
         }
         BotCommand[] botCommandsArray = botCommandsList.toArray(new BotCommand[0]);
         BaseResponse response = bot.execute(new SetMyCommands(botCommandsArray));
