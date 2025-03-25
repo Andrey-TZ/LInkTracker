@@ -1,12 +1,15 @@
 package backend.academy.scrapper.clients;
 
 import backend.academy.common.Update;
+import backend.academy.scrapper.NotificationService;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+@Primary
 @Component
-public class BotClient {
+public class BotClient implements NotificationService {
     private final WebClient webClient;
 
     public BotClient() {

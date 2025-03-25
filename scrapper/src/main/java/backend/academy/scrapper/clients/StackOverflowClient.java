@@ -2,14 +2,13 @@ package backend.academy.scrapper.clients;
 
 import backend.academy.common.Link;
 import backend.academy.common.Update;
-import backend.academy.scrapper.data.StackOverflowAnswer;
+import backend.academy.scrapper.NotificationService;
 import backend.academy.scrapper.data.StackOverflowResponse;
 import backend.academy.scrapper.exceptions.APIException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZoneOffset;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,17 +19,17 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
-public class StackOerFlowClient implements APIClient {
-    private static final String ANSWERS_FILTER = "!3vIo5Lk6ck_Z*JpBz";
+public class StackOverflowClient implements APIClient {
+    private static final String FILTER = "!T3AudphlMGKJd5uPja";
     private final WebClient webClient;
-    private final BotClient botClient;
+    private final NotificationService botClient;
     private final String key;
 
     @Autowired
-    public StackOerFlowClient(
+    public StackOverflowClient(
             @Value("${app.stackoverflow.access-token}") String accessToken,
             @Value("${app.stackoverflow.key}") String key,
-            BotClient botClient) {
+            NotificationService botClient) {
         this.webClient = WebClient.builder()
                 .baseUrl("https://api.stackexchange.com/2.3/questions/")
                 .defaultHeader("Authorization", "Bearer " + accessToken)
@@ -43,10 +42,11 @@ public class StackOerFlowClient implements APIClient {
         webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/{question}/answers")
+                        .path("/{question}")
                         .queryParam("fromdate", date)
                         .queryParam("site", "stackoverflow")
-                        .queryParam("filter", ANSWERS_FILTER)
+                        .queryParam("sort", "activity")
+                        .queryParam("filter", FILTER)
                         .queryParam("key", key)
                         .build(question))
                 .retrieve()
@@ -56,10 +56,8 @@ public class StackOerFlowClient implements APIClient {
                 .bodyToMono(StackOverflowResponse.class)
                 .subscribe(
                         response -> {
-                            List<String> answers = response.items().stream()
-                                    .map(StackOverflowAnswer::message)
-                                    .collect(Collectors.toList());
-                            botClient.sendUpdate(chatId, new Update(link, answers));
+                            String answer = response.items().getFirst().createNotificationMessage();
+                            botClient.sendUpdate(chatId, new Update(link, List.of(answer)));
                         },
                         error -> log.error("Error in StackOverflow client:{}", error.getMessage()));
     }

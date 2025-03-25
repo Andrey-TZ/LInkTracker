@@ -2,7 +2,7 @@ package backend.academy.scrapper.clients;
 
 import backend.academy.common.Link;
 import backend.academy.common.Update;
-import backend.academy.scrapper.data.GitHubCommit;
+import backend.academy.scrapper.data.GitHubIssue;
 import backend.academy.scrapper.exceptions.APIException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -31,19 +31,19 @@ public class GitHubClient implements APIClient {
         this.botClient = botClient;
     }
 
-    public void getCommitMessages(String owner, String repo, String since, String link, long chatId) {
+    public void getIssues(String owner, String repo, String since, String link, long chatId) {
         webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/repos/{owner}/{repo}/commits")
+                        .path("/repos/{owner}/{repo}/issues")
                         .queryParam("since", since)
                         .build(owner, repo))
                 .retrieve()
                 .onStatus(
                         HttpStatusCode::isError,
                         response -> Mono.error(new APIException("Ошибка в работе с API" + response.statusCode())))
-                .bodyToFlux(GitHubCommit.class)
-                .map(GitHubCommit::getMessage)
+                .bodyToFlux(GitHubIssue.class)
+                .map(GitHubIssue::createNotificationMessage)
                 .collectList()
                 .subscribe(
                         response -> botClient.sendUpdate(chatId, new Update(link, response)),
@@ -60,7 +60,7 @@ public class GitHubClient implements APIClient {
                 return false;
             }
             String[] path = uri.getPath().split("/");
-            getCommitMessages(
+            getIssues(
                     path[1],
                     path[2],
                     link.date().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME),

@@ -3,7 +3,7 @@ package backend.academy.scrapper;
 import backend.academy.common.Link;
 import backend.academy.scrapper.clients.APIClient;
 import backend.academy.scrapper.clients.GitHubClient;
-import backend.academy.scrapper.clients.StackOerFlowClient;
+import backend.academy.scrapper.clients.StackOverflowClient;
 import backend.academy.scrapper.data.LinkRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class SchedulerService {
     private final List<APIClient> apiClients = new ArrayList<>();
 
     @Autowired
-    public SchedulerService(LinkRepository repo, GitHubClient gitHubClient, StackOerFlowClient stackOerFlowClient) {
+    public SchedulerService(LinkRepository repo, GitHubClient gitHubClient, StackOverflowClient stackOerFlowClient) {
         this.repo = repo;
         apiClients.add(gitHubClient);
         apiClients.add(stackOerFlowClient);

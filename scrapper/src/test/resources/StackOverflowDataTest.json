@@ -1,0 +1,121 @@
+{
+    "items": [
+        {
+            "tags": [
+                "java",
+                "java-8"
+            ],
+            "comments": [
+                {
+                    "owner": {
+                        "account_id": 2413237,
+                        "reputation": 31310,
+                        "user_id": 2107876,
+                        "user_type": "registered",
+                        "accept_rate": 88,
+                        "profile_image": "https://www.gravatar.com/avatar/975e7190aac72397465126f04f46f3f6?s=256&d=identicon&r=PG",
+                        "display_name": "laune",
+                        "link": "https://stackoverflow.com/users/2107876/laune"
+                    },
+                    "edited": false,
+                    "score": 1,
+                    "creation_date": 1515576331,
+                    "post_id": 48183999,
+                    "comment_id": 83347799,
+                    "content_license": "CC BY-SA 3.0",
+                    "body_markdown": "To have or to have not. If you have the value you can put it; if you don&#39;t have it you have to compute and then put it.",
+                    "body": "To have or to have not. If you have the value you can put it; if you don&#39;t have it you have to compute and then put it."
+                },
+                {
+                    "owner": {
+                        "account_id": 1056871,
+                        "reputation": 121098,
+                        "user_id": 1059372,
+                        "user_type": "registered",
+                        "accept_rate": 97,
+                        "profile_image": "https://i.sstatic.net/W6OMC.png?s=256",
+                        "display_name": "Eugene",
+                        "link": "https://stackoverflow.com/users/1059372/eugene"
+                    },
+                    "edited": false,
+                    "score": 1,
+                    "creation_date": 1515576572,
+                    "post_id": 48183999,
+                    "comment_id": 83347983,
+                    "content_license": "CC BY-SA 3.0",
+                    "body_markdown": "see this https://stackoverflow.com/questions/10743622/concurrenthashmap-avoid-extra-object-creation-with-putifabsent, looks like a duplicate also",
+                    "body": "see this <a href=\"https://stackoverflow.com/questions/10743622/concurrenthashmap-avoid-extra-object-creation-with-putifabsent\" title=\"concurrenthashmap avoid extra object creation with putifabsent\">stackoverflow.com/questions/10743622/&hellip;</a>, looks like a duplicate also"
+                }
+            ],
+            "answers": [
+                {
+                    "owner": {
+                        "account_id": 1263831,
+                        "reputation": 394194,
+                        "user_id": 1221571,
+                        "user_type": "registered",
+                        "accept_rate": 67,
+                        "profile_image": "https://i.sstatic.net/jXcg4.png?s=256",
+                        "display_name": "Eran",
+                        "link": "https://stackoverflow.com/users/1221571/eran"
+                    },
+                    "is_accepted": false,
+                    "score": 142,
+                    "last_activity_date": 1714958977,
+                    "last_edit_date": 1714958977,
+                    "creation_date": 1515576389,
+                    "answer_id": 48184112,
+                    "question_id": 48183999,
+                    "content_license": "CC BY-SA 4.0",
+                    "body_markdown": "Suppose you have a `Map&lt;String, ValueClass&gt;`. Then\r\n\r\n    map.putIfAbsent(&quot;key&quot;, new ValueClass());\r\n\r\nwill create a `ValueClass` instance anyway, even if the &quot;key&quot; key is already in the `Map`. This would just create an unnecessary instance.\r\n\r\nOn the other hand\r\n\r\n    map.computeIfAbsent(&quot;key&quot;, k -&gt; new ValueClass());\r\n\r\nwill only create a `ValueClass` instance if the &quot;key&quot; key is not already in the `Map` (or is mapped to a `null` value).\r\n\r\nTherefore `computeIfAbsent` is **more efficient**.\r\n\r\n`putIfAbsent` is equivalent to:\r\n\r\n    ValueClass value = new ValueClass();\r\n    if (map.get(&quot;key&quot;) == null) {\r\n        map.put(&quot;key&quot;, value);\r\n    }\r\n\r\nwhile `computeIfAbsent` is equivalent to:\r\n\r\n    if (map.get(&quot;key&quot;) == null) {\r\n        map.put(&quot;key&quot;, new ValueClass());\r\n    }\r\n\r\nAnother small difference between the two methods is that `computeIfAbsent` will not put a `null` value for an absent key, while `putIfAbsent` will.",
+                    "body": "<p>Suppose you have a <code>Map&lt;String, ValueClass&gt;</code>. Then</p>\n<pre><code>map.putIfAbsent(&quot;key&quot;, new ValueClass());\n</code></pre>\n<p>will create a <code>ValueClass</code> instance anyway, even if the &quot;key&quot; key is already in the <code>Map</code>. This would just create an unnecessary instance.</p>\n<p>On the other hand</p>\n<pre><code>map.computeIfAbsent(&quot;key&quot;, k -&gt; new ValueClass());\n</code></pre>\n<p>will only create a <code>ValueClass</code> instance if the &quot;key&quot; key is not already in the <code>Map</code> (or is mapped to a <code>null</code> value).</p>\n<p>Therefore <code>computeIfAbsent</code> is <strong>more efficient</strong>.</p>\n<p><code>putIfAbsent</code> is equivalent to:</p>\n<pre><code>ValueClass value = new ValueClass();\nif (map.get(&quot;key&quot;) == null) {\n    map.put(&quot;key&quot;, value);\n}\n</code></pre>\n<p>while <code>computeIfAbsent</code> is equivalent to:</p>\n<pre><code>if (map.get(&quot;key&quot;) == null) {\n    map.put(&quot;key&quot;, new ValueClass());\n}\n</code></pre>\n<p>Another small difference between the two methods is that <code>computeIfAbsent</code> will not put a <code>null</code> value for an absent key, while <code>putIfAbsent</code> will.</p>\n"
+                },
+                {
+                    "owner": {
+                        "account_id": 45934,
+                        "reputation": 207076,
+                        "user_id": 135589,
+                        "user_type": "registered",
+                        "accept_rate": 100,
+                        "profile_image": "https://www.gravatar.com/avatar/354d279a4def71b4541964105311709c?s=256&d=identicon&r=PG",
+                        "display_name": "Jesper",
+                        "link": "https://stackoverflow.com/users/135589/jesper"
+                    },
+                    "is_accepted": false,
+                    "score": 18,
+                    "last_activity_date": 1515576573,
+                    "creation_date": 1515576573,
+                    "answer_id": 48184181,
+                    "question_id": 48183999,
+                    "content_license": "CC BY-SA 3.0",
+                    "body_markdown": "You can understand the difference by carefully looking at the method signatures:\r\n\r\n- `putIfAbsent` takes a key and value, and puts the value in the map if there is no value for that key in the map.\r\n- `computeIfAbsent` takes a key and a `Function`. If there is no value for that key in the map, the function is called to create the value, which is then put in the map.\r\n\r\nIf you already have the value, use `putIfAbsent`.\r\n\r\nIf you don&#39;t have the value yet and creating the value is an expensive operation (for example, the value has to be looked up in a database), then use `computeIfAbsent`, so that the expensive operation doesn&#39;t need to be performed in case the map already contains a value for the specified key.",
+                    "body": "<p>You can understand the difference by carefully looking at the method signatures:</p>\n\n<ul>\n<li><code>putIfAbsent</code> takes a key and value, and puts the value in the map if there is no value for that key in the map.</li>\n<li><code>computeIfAbsent</code> takes a key and a <code>Function</code>. If there is no value for that key in the map, the function is called to create the value, which is then put in the map.</li>\n</ul>\n\n<p>If you already have the value, use <code>putIfAbsent</code>.</p>\n\n<p>If you don't have the value yet and creating the value is an expensive operation (for example, the value has to be looked up in a database), then use <code>computeIfAbsent</code>, so that the expensive operation doesn't need to be performed in case the map already contains a value for the specified key.</p>\n"
+                }
+            ],
+            "owner": {
+                "account_id": 1199784,
+                "reputation": 19011,
+                "user_id": 1170677,
+                "user_type": "registered",
+                "accept_rate": 54,
+                "profile_image": "https://www.gravatar.com/avatar/ce2bdf03db9d6eea0cf5adb14f0c7853?s=256&d=identicon&r=PG",
+                "display_name": "Adelin",
+                "link": "https://stackoverflow.com/users/1170677/adelin"
+            },
+            "comment_count": 2,
+            "is_answered": true,
+            "view_count": 169230,
+            "accepted_answer_id": 48184207,
+            "answer_count": 7,
+            "score": 156,
+            "last_activity_date": 1714959167,
+            "creation_date": 1515576061,
+            "question_id": 48183999,
+            "link": "https://stackoverflow.com/questions/48183999/what-is-the-difference-between-putifabsent-and-computeifabsent-in-java-8-map",
+            "title": "What is the difference between putIfAbsent and computeIfAbsent in Java 8 Map ?"
+        }
+    ],
+    "has_more": false,
+    "quota_max": 10000,
+    "quota_remaining": 9958
+}
