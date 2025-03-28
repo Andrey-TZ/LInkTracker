@@ -1,4 +1,4 @@
-package backend.academy.scrapper.data;
+package backend.academy.scrapper.services.link;
 
 import backend.academy.common.Link;
 import backend.academy.scrapper.exceptions.LinkAlreadyExistsException;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 @Slf4j
 @Repository
 @Primary
-public class MapLinkRepository implements LinkRepository {
+public class MapLinkService implements LinkService {
     private final HashMap<Long, Set<Link>> linkRepository = new HashMap<>();
 
     @Override

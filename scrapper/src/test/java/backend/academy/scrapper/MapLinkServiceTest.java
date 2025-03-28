@@ -1,22 +1,22 @@
 package backend.academy.scrapper;
 
 import backend.academy.common.Link;
-import backend.academy.scrapper.data.MapLinkRepository;
 import backend.academy.scrapper.exceptions.LinkAlreadyExistsException;
 import backend.academy.scrapper.exceptions.UserAlreadyExistsException;
 import backend.academy.scrapper.exceptions.UserNotFoundException;
+import backend.academy.scrapper.services.link.MapLinkService;
 import java.util.Iterator;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class MapLinkRepositoryTest {
-    MapLinkRepository repository;
+class MapLinkServiceTest {
+    MapLinkService repository;
 
     @BeforeEach
     void setUp() {
-        repository = new MapLinkRepository();
+        repository = new MapLinkService();
     }
 
     @Test

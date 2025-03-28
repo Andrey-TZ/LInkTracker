@@ -7,8 +7,17 @@ app:
 spring:
   application:
     name: Scrapper
+  datasource:
+    url: jdbc:postgresql://localhost:5432/scrapper_db
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
   liquibase:
     enabled: false
+  #    change-log: classpath:db/changelog/db.changelog-master.sql
   jpa:
     hibernate:
       ddl-auto: validate

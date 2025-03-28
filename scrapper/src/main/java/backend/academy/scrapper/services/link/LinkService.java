@@ -1,9 +1,9 @@
-package backend.academy.scrapper.data;
+package backend.academy.scrapper.services.link;
 
 import backend.academy.common.Link;
 import java.util.Set;
 
-public interface LinkRepository {
+public interface LinkService {
     void addUser(long chatId);
 
     void addLink(long chatId, Link link);

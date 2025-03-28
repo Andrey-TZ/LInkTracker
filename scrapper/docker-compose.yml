@@ -1,0 +1,46 @@
+version: '3.1'
+
+services:
+  postgres-db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: "scrapper_db"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  #    volumes:
+  #      - ./infrastructure/db/create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
+  #      - db-data:/var/lib/postgresql/data
+
+  liquibase:
+    image: liquibase/liquibase
+    container_name: liquibase_migrations
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    volumes:
+      - ./src/main/resources/db/changelog:/liquibase/changelog
+    command: [ "update", "--url=jdbc:postgresql://postgres-db:5432/scrapper_db", "--username=postgres", "--password=password", "--changeLogFile=changelog/db.changelog-master.sql" ]
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4:7
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+volumes:
+  db-data:
+  pgadmin-data:

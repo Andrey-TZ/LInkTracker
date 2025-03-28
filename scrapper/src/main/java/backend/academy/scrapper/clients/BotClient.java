@@ -1,7 +1,7 @@
 package backend.academy.scrapper.clients;
 
 import backend.academy.common.Update;
-import backend.academy.scrapper.NotificationService;
+import backend.academy.scrapper.services.NotificationService;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;

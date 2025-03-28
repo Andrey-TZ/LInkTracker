@@ -1,7 +1,7 @@
 package backend.academy.scrapper;
 
 import backend.academy.common.Link;
-import backend.academy.scrapper.data.LinkRepository;
+import backend.academy.scrapper.services.link.LinkService;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/links")
 public class LinkController {
-    private final LinkRepository mapLinkRepository;
+    private final LinkService mapLinkService;
 
-    public LinkController(@Autowired LinkRepository mapLinkRepository) {
-        this.mapLinkRepository = mapLinkRepository;
+    public LinkController(@Autowired LinkService mapLinkService) {
+        this.mapLinkService = mapLinkService;
     }
 
     @PostMapping("/{chatId}")
@@ -33,7 +33,7 @@ public class LinkController {
                 .addKeyValue("link", link)
                 .log();
         // Добавление ссылки в репозиторий пользователя
-        mapLinkRepository.addLink(chatId, link);
+        mapLinkService.addLink(chatId, link);
         return ResponseEntity.ok("Link was added successfully");
     }
 
@@ -44,7 +44,7 @@ public class LinkController {
                 .addKeyValue("user", chatId)
                 .log();
         // Добавление пользователя в общий репозиторий
-        mapLinkRepository.addUser(chatId);
+        mapLinkService.addUser(chatId);
         return ResponseEntity.status(HttpStatus.CREATED).body("User was added");
     }
 
@@ -54,7 +54,7 @@ public class LinkController {
                 .setMessage("Отправка отслеживаемых ссылок")
                 .addKeyValue("user", chatId)
                 .log();
-        Set<Link> links = mapLinkRepository.getLinks(chatId);
+        Set<Link> links = mapLinkService.getLinks(chatId);
         return ResponseEntity.status(HttpStatus.FOUND).body(links);
     }
 
@@ -65,7 +65,7 @@ public class LinkController {
                 .addKeyValue("user", chatId)
                 .addKeyValue("link", link)
                 .log();
-        mapLinkRepository.deleteLink(chatId, link);
+        mapLinkService.deleteLink(chatId, link);
         return ResponseEntity.ok("Link has been deleted");
     }
 }

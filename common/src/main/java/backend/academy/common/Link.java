@@ -11,6 +11,8 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 public class Link {
+    private Long id;
+
     @JsonProperty("url")
     private String url;
 

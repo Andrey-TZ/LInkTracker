@@ -1,4 +1,4 @@
-package backend.academy.scrapper;
+package backend.academy.scrapper.services;
 
 import backend.academy.common.Update;
 import org.springframework.stereotype.Service;

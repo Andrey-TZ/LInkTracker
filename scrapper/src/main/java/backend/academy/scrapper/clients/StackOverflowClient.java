@@ -2,9 +2,9 @@ package backend.academy.scrapper.clients;
 
 import backend.academy.common.Link;
 import backend.academy.common.Update;
-import backend.academy.scrapper.NotificationService;
 import backend.academy.scrapper.data.StackOverflowResponse;
 import backend.academy.scrapper.exceptions.APIException;
+import backend.academy.scrapper.services.NotificationService;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZoneOffset;
