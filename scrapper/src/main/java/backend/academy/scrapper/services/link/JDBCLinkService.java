@@ -41,7 +41,7 @@ public class JDBCLinkService implements LinkService {
             throw new LinkAlreadyExistsException(String.format("Ссылка %s уже отслеживается", link.url()));
         }
 
-        Optional<Long> linkId = repository.addLink(userId.get(), link.url(), link.date());
+        Optional<Long> linkId = repository.addLink(userId.orElseThrow(), link.url(), link.date());
         if (linkId.isEmpty()) {
             throw new LinkServiceException("Не удалось добавить ссылку");
         }
@@ -55,7 +55,7 @@ public class JDBCLinkService implements LinkService {
                 }
             }
 
-            repository.addLinkTag(linkId.get(), tagId.get());
+            repository.addLinkTag(linkId.orElseThrow(), tagId.orElseThrow());
         }
     }
 
@@ -71,14 +71,14 @@ public class JDBCLinkService implements LinkService {
             throw new LinkNotFoundException(String.format("Ссылка %s не отслеживается", link.url()));
         }
 
-        Optional<Long> linkId = repository.findLinkIdByUserIdAndUrl(userId.get(), link.url());
+        Optional<Long> linkId = repository.findLinkIdByUserIdAndUrl(userId.orElseThrow(), link.url());
 
         if (linkId.isEmpty()) {
             throw new LinkServiceException("Не получилось удалить ссылку из отслеживаемых");
         }
 
-        repository.deleteLinkTagByLink(linkId.get());
-        repository.deleteLink(linkId.get());
+        repository.deleteLinkTagByLink(linkId.orElseThrow());
+        repository.deleteLink(linkId.orElseThrow());
     }
 
     @Override
@@ -92,7 +92,7 @@ public class JDBCLinkService implements LinkService {
             throw new UserNotFoundException("Пользователь не найден");
         }
 
-        return repository.findLinksByUserId(userId.get());
+        return repository.findLinksByUserId(userId.orElseThrow());
     }
 
     @Override
