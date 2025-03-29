@@ -20,7 +20,7 @@ public class MapLinkService implements LinkService {
 
     @Override
     public void addUser(long chatId) {
-        if (userExists(chatId)) {
+        if (linkRepository.containsKey(chatId)) {
             throw new UserAlreadyExistsException("Пользователь уже существует");
         }
         linkRepository.put(chatId, new HashSet<>());
@@ -28,7 +28,7 @@ public class MapLinkService implements LinkService {
 
     @Override
     public void addLink(long chatId, Link link) {
-        if (!userExists(chatId)) {
+        if (!linkRepository.containsKey(chatId)) {
             throw new UserNotFoundException("Пользователь не найден");
         }
         Set<Link> links = linkRepository.get(chatId);
@@ -61,10 +61,5 @@ public class MapLinkService implements LinkService {
     @Override
     public Set<Long> getUsers() {
         return linkRepository.keySet();
-    }
-
-    @Override
-    public boolean userExists(long chatId) {
-        return linkRepository.containsKey(chatId);
     }
 }

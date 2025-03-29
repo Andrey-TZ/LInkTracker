@@ -3,7 +3,7 @@
 -- changeset andrey:1-init-schema
 CREATE TABLE CHAT(
     id BIGSERIAL PRIMARY KEY,
-    chatId BIGSERIAL NOT NULL
+    chatId BIGSERIAL NOT NULL UNIQUE
 );
 
 CREATE TABLE LINK(

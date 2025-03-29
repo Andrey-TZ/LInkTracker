@@ -1,4 +1,4 @@
-package backend.academy.scrapper;
+package backend.academy.scrapper.sevices;
 
 import backend.academy.common.Link;
 import backend.academy.scrapper.exceptions.LinkAlreadyExistsException;

@@ -20,9 +20,13 @@ public interface LinkRepository {
 
     void deleteTag(long tagId);
 
+    void deleteLinkTagByLink(long linkId);
+
     void deleteLinkTag(long linkId, long tagId);
 
     Optional<Long> findChatById(long userId);
+
+    Optional<Long> findTagId(String tag);
 
     Optional<Long> findUserIdByChatId(long chatId);
 
@@ -31,4 +35,12 @@ public interface LinkRepository {
     Set<Long> findAllUsers();
 
     Set<Link> findLinksByUserId(long userId);
+
+    Optional<Long> findLinkIdByUserIdAndUrl(long userId, String url);
+
+    boolean userExists(Long chatId);
+
+    boolean linkExists(Long chatId, String url);
+
+    boolean tagExists(String tag);
 }

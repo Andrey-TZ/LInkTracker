@@ -13,6 +13,4 @@ public interface LinkService {
     Set<Link> getLinks(long chatId);
 
     Set<Long> getUsers();
-
-    boolean userExists(long chatId);
 }

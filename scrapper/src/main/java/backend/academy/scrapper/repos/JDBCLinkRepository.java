@@ -10,7 +10,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Repository("jdbcRepo")
 public class JDBCLinkRepository implements LinkRepository {
     private final JdbcClient jdbcClient;
 
@@ -81,6 +81,14 @@ public class JDBCLinkRepository implements LinkRepository {
     }
 
     @Override
+    public void deleteLinkTagByLink(long linkId) {
+        jdbcClient
+                .sql("DELETE FROM link_tag WHERE link = :linkId")
+                .param("linkId", linkId)
+                .update();
+    }
+
+    @Override
     public void deleteLinkTag(long linkId, long tagId) {
         jdbcClient
                 .sql("DELETE FROM link_tag WHERE link = :linkId AND tag = :tagId")
@@ -94,6 +102,15 @@ public class JDBCLinkRepository implements LinkRepository {
         return jdbcClient
                 .sql("SELECT chatId FROM chat WHERE id = ?")
                 .param(userId)
+                .query(Long.class)
+                .optional();
+    }
+
+    @Override
+    public Optional<Long> findTagId(String tag) {
+        return jdbcClient
+                .sql("SELECT id FROM tag WHERE tag = ?")
+                .param(tag)
                 .query(Long.class)
                 .optional();
     }
@@ -130,5 +147,44 @@ public class JDBCLinkRepository implements LinkRepository {
                 .param(userId)
                 .query(new LinkRowMapper())
                 .set();
+    }
+
+    @Override
+    public Optional<Long> findLinkIdByUserIdAndUrl(long userId, String url) {
+        return jdbcClient
+                .sql("SELECT id FROM link WHERE userId = :userId AND url = :url")
+                .param("userId", userId)
+                .param("url", url)
+                .query(Long.class)
+                .optional();
+    }
+
+    @Override
+    public boolean userExists(Long chatId) {
+        return jdbcClient
+                .sql("SELECT EXISTS(SELECT 1 FROM chat WHERE chatId = :chatId)")
+                .param("chatId", chatId)
+                .query(Boolean.class)
+                .single();
+    }
+
+    @Override
+    public boolean linkExists(Long chatId, String url) {
+        return jdbcClient
+                .sql(
+                        "SELECT EXISTS(SELECT 1 FROM link JOIN chat ON link.userId = chat.id WHERE chat.chatId = :chatId AND link.url = :url)")
+                .param("chatId", chatId)
+                .param("url", url)
+                .query(Boolean.class)
+                .single();
+    }
+
+    @Override
+    public boolean tagExists(String tag) {
+        return jdbcClient
+                .sql("SELECT EXISTS(SELECT 1 FROM tag WHERE tag = :tag)")
+                .param("tag", tag)
+                .query(Boolean.class)
+                .single();
     }
 }
