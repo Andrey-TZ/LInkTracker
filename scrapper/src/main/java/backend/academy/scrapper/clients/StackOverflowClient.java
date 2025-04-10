@@ -11,26 +11,18 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-
 public class StackOverflowClient implements APIClient {
     private static final String ANSWERS_FILTER = "!3vIo5Lk6ck_Z*JpBz";
     private final WebClient webClient;
     private final BotClient botClient;
     private final String key;
 
-
-    public StackOverflowClient(
-            String accessToken,
-            String key,
-            BotClient botClient) {
+    public StackOverflowClient(String accessToken, String key, BotClient botClient) {
         this.webClient = WebClient.builder()
                 .baseUrl("https://api.stackexchange.com/2.3/questions/")
                 .defaultHeader("Authorization", "Bearer " + accessToken)

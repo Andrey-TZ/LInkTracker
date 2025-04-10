@@ -2,8 +2,6 @@ package backend.academy.scrapper;
 
 import backend.academy.common.Link;
 import backend.academy.scrapper.clients.APIClient;
-import backend.academy.scrapper.clients.GitHubClient;
-import backend.academy.scrapper.clients.StackOverflowClient;
 import backend.academy.scrapper.data.LinkRepository;
 import java.util.ArrayList;
 import java.util.List;

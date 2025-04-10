@@ -29,6 +29,9 @@ public class AppConfig {
 
     @Bean
     public APIClient stackOverflowClient(@Autowired ScrapperConfig scrapperConfig, @Autowired BotClient botClient) {
-        return new StackOverflowClient(scrapperConfig.stackOverflow().accessToken(), scrapperConfig.stackOverflow().key(), botClient);
+        return new StackOverflowClient(
+                scrapperConfig.stackOverflow().accessToken(),
+                scrapperConfig.stackOverflow().key(),
+                botClient);
     }
 }

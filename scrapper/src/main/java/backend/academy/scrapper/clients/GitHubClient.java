@@ -9,10 +9,7 @@ import java.net.URISyntaxException;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -20,7 +17,6 @@ import reactor.core.publisher.Mono;
 public class GitHubClient implements APIClient {
     private final WebClient webClient;
     private final BotClient botClient;
-
 
     public GitHubClient(String githubToken, BotClient botClient) {
         this.webClient = WebClient.builder()
