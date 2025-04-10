@@ -1,0 +1,16 @@
+package backend.academy.bot;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
+
+@Configuration
+public class BeansConfiguration {
+    @Bean
+    @ConfigurationProperties(prefix = "scrapper", ignoreUnknownFields = false)
+    public WebClient webClient(@Autowired BotConfig botConfig) {
+        return WebClient.builder().baseUrl(botConfig.scrapperURL()).build();
+    }
+}

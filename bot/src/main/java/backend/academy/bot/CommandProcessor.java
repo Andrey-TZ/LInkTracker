@@ -52,15 +52,14 @@ public class CommandProcessor {
                         .setMessage("Невалидная ссылка")
                         .addKeyValue("url", uri)
                         .log();
-                log.info("Введена невалидная ссылка");
-                eventPublisher.publishEvent(new UpdateMessage(chatId, "Введите валидную ссылку"));
+                eventPublisher.publishEvent(new UpdateMessage(chatId, "Введена невалидная ссылка"));
             }
         } catch (IllegalArgumentException e) {
             log.atError()
                     .setMessage("Неверный формант аргумента команды /track")
                     .addKeyValue("args", args)
                     .log();
-            eventPublisher.publishEvent(new UpdateMessage(chatId, "Введите валидную ссылку"));
+            eventPublisher.publishEvent(new UpdateMessage(chatId, "Введена невалидная ссылка"));
         }
     }
 
@@ -104,6 +103,6 @@ public class CommandProcessor {
         commands.put(
                 "/help",
                 new CommandWithInfo((Long chatId, String[] args) -> help(chatId), "/help - список команд", false));
-        log.atInfo().setMessage("Команды зарегистрированы").log();
+        log.atInfo().setMessage("Команды созданы").log();
     }
 }

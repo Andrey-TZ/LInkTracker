@@ -20,17 +20,17 @@ public class Link {
     private String[] tags;
 
     @JsonProperty("date")
-    private LocalDateTime date;
+    private LocalDateTime updatedAt;
 
     public Link(String url) {
         this.url = url;
-        date = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
     public Link(String url, String[] tags) {
         this.url = url;
         this.tags = tags;
-        date = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
     @Override
@@ -46,7 +46,7 @@ public class Link {
         return Objects.hash(url);
     }
 
-    public void setDate() {
-        date = LocalDateTime.now();
+    public void resetDate() {
+        updatedAt = LocalDateTime.now();
     }
 }

@@ -63,7 +63,7 @@ public class GitHubClient implements APIClient {
             getIssues(
                     path[1],
                     path[2],
-                    link.date().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME),
+                    link.updatedAt().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_DATE_TIME),
                     link.url(),
                     chatId);
             return true;

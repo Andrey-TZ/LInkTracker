@@ -3,6 +3,9 @@ app:
   stackoverflow:
     key: ${SO_TOKEN_KEY}
     access-token: ${SO_ACCESS_TOKEN}
+  scheduler:
+    threads: 5
+  bot-url: http://localhost:8080
 
 spring:
   application:

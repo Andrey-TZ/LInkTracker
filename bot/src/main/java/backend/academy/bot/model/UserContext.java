@@ -38,7 +38,7 @@ public class UserContext {
         return args.toArray(String[]::new);
     }
 
-    public void deleteArgs() {
+    public void clearArgs() {
         args = new ArrayList<>();
     }
 }

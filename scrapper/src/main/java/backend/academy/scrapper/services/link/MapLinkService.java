@@ -1,13 +1,14 @@
-package backend.academy.scrapper.services.link;
+package backend.academy.scrapper.data;
 
 import backend.academy.common.Link;
 import backend.academy.scrapper.exceptions.LinkAlreadyExistsException;
 import backend.academy.scrapper.exceptions.LinkNotFoundException;
 import backend.academy.scrapper.exceptions.UserAlreadyExistsException;
 import backend.academy.scrapper.exceptions.UserNotFoundException;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -15,12 +16,12 @@ import org.springframework.stereotype.Repository;
 @Slf4j
 @Repository
 @Primary
-public class MapLinkService implements LinkService {
-    private final HashMap<Long, Set<Link>> linkRepository = new HashMap<>();
+public class MapLinkRepository implements LinkRepository {
+    private final Map<Long, Set<Link>> linkRepository = new ConcurrentHashMap<>();
 
     @Override
     public void addUser(long chatId) {
-        if (linkRepository.containsKey(chatId)) {
+        if (userExists(chatId)) {
             throw new UserAlreadyExistsException("Пользователь уже существует");
         }
         linkRepository.put(chatId, new HashSet<>());
@@ -28,7 +29,7 @@ public class MapLinkService implements LinkService {
 
     @Override
     public void addLink(long chatId, Link link) {
-        if (!linkRepository.containsKey(chatId)) {
+        if (!userExists(chatId)) {
             throw new UserNotFoundException("Пользователь не найден");
         }
         Set<Link> links = linkRepository.get(chatId);
@@ -61,5 +62,10 @@ public class MapLinkService implements LinkService {
     @Override
     public Set<Long> getUsers() {
         return linkRepository.keySet();
+    }
+
+    @Override
+    public boolean userExists(long chatId) {
+        return linkRepository.containsKey(chatId);
     }
 }

@@ -13,9 +13,9 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import jakarta.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +28,7 @@ import org.springframework.stereotype.Service;
 public class TelegramBotService {
     private final TelegramBot bot;
     private final Map<String, CommandWithInfo> commands;
-    private final Map<Long, UserContext> userContexts = new HashMap<>();
+    private final Map<Long, UserContext> userContexts = new ConcurrentHashMap<>();
 
     public TelegramBotService(
             @Value("${app.telegram-token}") String botToken, @Autowired CommandProcessor commandProcessor) {
@@ -99,6 +99,7 @@ public class TelegramBotService {
                     .addKeyValue("tag", args[2])
                     .log();
             commands.get(name).command().execute(chatId, args);
+            context.clearArgs();
         } else if (args.length == 2) {
             log.atDebug()
                     .setMessage("Ожидание ввода тегов")
@@ -129,6 +130,7 @@ public class TelegramBotService {
                     .addKeyValue("link", args[1])
                     .log();
             commands.get(name).command().execute(chatId, args);
+            context.clearArgs();
         } else {
             log.atDebug()
                     .setMessage("Ожидание ввода ссылки для прекращения отслеживания")

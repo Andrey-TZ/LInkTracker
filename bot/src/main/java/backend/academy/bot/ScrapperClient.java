@@ -21,8 +21,9 @@ public class ScrapperClient {
     private final WebClient webClient;
     private final ApplicationEventPublisher eventPublisher;
 
-    public ScrapperClient(@Autowired ApplicationEventPublisher eventPublisher) {
-        this.webClient = WebClient.builder().baseUrl("http://localhost:8081").build();
+    @Autowired
+    public ScrapperClient(WebClient webClient, ApplicationEventPublisher eventPublisher) {
+        this.webClient = webClient;
         this.eventPublisher = eventPublisher;
     }
 
@@ -71,7 +72,10 @@ public class ScrapperClient {
                             log.info(response);
                         },
                         error -> {
-                            log.error("ОШИБКА");
+                            log.atError()
+                                    .setMessage("Ошибка при отправке сообщения на сервер")
+                                    .addKeyValue("Сообщение", error.getMessage())
+                                    .log();
                             eventPublisher.publishEvent(
                                     new UpdateMessage(chatId, "Не удалось отправить ссылку: " + error.getMessage()));
                         });
