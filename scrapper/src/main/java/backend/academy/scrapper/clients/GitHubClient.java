@@ -17,13 +17,12 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-@Component
 public class GitHubClient implements APIClient {
     private final WebClient webClient;
     private final BotClient botClient;
 
-    @Autowired
-    public GitHubClient(@Value("${app.github-token}") String githubToken, BotClient botClient) {
+
+    public GitHubClient(String githubToken, BotClient botClient) {
         this.webClient = WebClient.builder()
                 .baseUrl("https://api.github.com/")
                 .defaultHeader("Authorization", "token " + githubToken)

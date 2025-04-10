@@ -53,7 +53,7 @@ class CommandProcessorTest {
             if (!(event instanceof UpdateMessage)) return false;
 
             UpdateMessage message = (UpdateMessage) event;
-            return Objects.equals(message.chatId(), chatId) && message.message().equals("Введите валидную ссылку");
+            return Objects.equals(message.chatId(), chatId) && message.message().equals("Введена невалидная ссылка");
         }));
     }
 

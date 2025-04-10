@@ -13,4 +13,9 @@ public class BeansConfiguration {
     public WebClient webClient(@Autowired BotConfig botConfig) {
         return WebClient.builder().baseUrl(botConfig.scrapperURL()).build();
     }
+
+    @Bean
+    public TelegramBotService telegramBotService(BotConfig botConfig, CommandProcessor commandProcessor) {
+        return new TelegramBotService(botConfig.telegramToken(), commandProcessor);
+    }
 }

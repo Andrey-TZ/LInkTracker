@@ -19,17 +19,17 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-@Component
+
 public class StackOverflowClient implements APIClient {
     private static final String ANSWERS_FILTER = "!3vIo5Lk6ck_Z*JpBz";
     private final WebClient webClient;
     private final BotClient botClient;
     private final String key;
 
-    @Autowired
+
     public StackOverflowClient(
-            @Value("${app.stackoverflow.access-token}") String accessToken,
-            @Value("${app.stackoverflow.key}") String key,
+            String accessToken,
+            String key,
             BotClient botClient) {
         this.webClient = WebClient.builder()
                 .baseUrl("https://api.stackexchange.com/2.3/questions/")

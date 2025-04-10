@@ -20,10 +20,11 @@ public class SchedulerService {
     private final List<APIClient> apiClients = new ArrayList<>();
 
     @Autowired
-    public SchedulerService(LinkRepository repo, GitHubClient gitHubClient, StackOverflowClient stackOerFlowClient) {
+    public SchedulerService(LinkRepository repo, APIClient gitHubClient, APIClient stackOverflowClient) {
+
         this.repo = repo;
         apiClients.add(gitHubClient);
-        apiClients.add(stackOerFlowClient);
+        apiClients.add(stackOverflowClient);
     }
 
     @Scheduled(cron = "0 * * * * *")

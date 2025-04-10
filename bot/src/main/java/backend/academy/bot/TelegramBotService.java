@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -30,8 +28,7 @@ public class TelegramBotService {
     private final Map<String, CommandWithInfo> commands;
     private final Map<Long, UserContext> userContexts = new ConcurrentHashMap<>();
 
-    public TelegramBotService(
-            @Value("${app.telegram-token}") String botToken, @Autowired CommandProcessor commandProcessor) {
+    public TelegramBotService(String botToken, CommandProcessor commandProcessor) {
         this.bot = new TelegramBot(botToken);
         commands = commandProcessor.commands();
         registerCommands();
