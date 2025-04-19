@@ -6,6 +6,7 @@ app:
   scheduler:
     threads: 5
   bot-url: http://localhost:8080
+  access-type: SQL
 
 spring:
   application:
@@ -19,8 +20,8 @@ spring:
     init:
       mode: always
   liquibase:
-    enabled: false
-  #    change-log: classpath:db/changelog/db.changelog-master.sql
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.sql
   jpa:
     hibernate:
       ddl-auto: validate

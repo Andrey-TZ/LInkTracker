@@ -10,7 +10,8 @@ public record ScrapperConfig(
         @NotEmpty String githubToken,
         StackOverflowCredentials stackOverflow,
         SchedulerConfig scheduler,
-        @NotEmpty String botURL) {
+        @NotEmpty String botURL,
+        @NotEmpty String accessType) {
     public record StackOverflowCredentials(@NotEmpty String key, @NotEmpty String accessToken) {}
 
     public record SchedulerConfig(@NotEmpty Integer threads) {}

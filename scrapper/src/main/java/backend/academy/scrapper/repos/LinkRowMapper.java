@@ -12,7 +12,7 @@ public class LinkRowMapper implements RowMapper<Link> {
         Link link = new Link();
         //        link.id(rs.getLong("id"));
         link.url(rs.getString("url"));
-        link.date(rs.getTimestamp("creation_date").toLocalDateTime());
+        link.updatedAt(rs.getTimestamp("creation_date").toLocalDateTime());
         return link;
     }
 }

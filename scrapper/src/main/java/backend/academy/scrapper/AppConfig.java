@@ -4,9 +4,16 @@ import backend.academy.scrapper.clients.APIClient;
 import backend.academy.scrapper.clients.BotClient;
 import backend.academy.scrapper.clients.GitHubClient;
 import backend.academy.scrapper.clients.StackOverflowClient;
+import backend.academy.scrapper.repos.JDBCLinkRepository;
+import backend.academy.scrapper.repos.LinkRepository;
+import backend.academy.scrapper.services.link.JDBCLinkService;
+import backend.academy.scrapper.services.link.LinkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
@@ -33,5 +40,17 @@ public class AppConfig {
                 scrapperConfig.stackOverflow().accessToken(),
                 scrapperConfig.stackOverflow().key(),
                 botClient);
+    }
+
+    @Bean(name = "jdbcRepo")
+    @ConditionalOnProperty(prefix = "app", name = "access-type", havingValue = "SQL")
+    public LinkRepository jdbcLinkRepository(JdbcClient jdbcClient) {
+        return new JDBCLinkRepository(jdbcClient);
+    }
+
+    @Bean(name = "jdbcLinkService")
+    @ConditionalOnProperty(prefix = "app", name = "access-type", havingValue = "SQL")
+    public LinkService jdbcLinkService(@Qualifier("jdbcRepo") LinkRepository linkRepository) {
+        return new JDBCLinkService(linkRepository);
     }
 }

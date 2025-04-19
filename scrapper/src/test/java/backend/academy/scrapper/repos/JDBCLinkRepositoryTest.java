@@ -1,6 +1,7 @@
 package backend.academy.scrapper.repos;
 
 import backend.academy.common.Link;
+import backend.academy.scrapper.TestsBeansContainersConfiguration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -11,34 +12,31 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @JdbcTest
+@Import(TestsBeansContainersConfiguration.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class JDBCLinkRepositoryTest {
 
-    @Container
-    @ServiceConnection
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
-            .withDatabaseName("scrapper_test")
-            .withUsername("test")
-            .withPassword("test");
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
-        registry.add("spring.liquibase.enabled", () -> "true");
-        registry.add("spring.liquibase.change-log", () -> "classpath:db/changelog/db.changelog-master.sql");
-    }
+    //    @Container
+    //    @ServiceConnection
+    //    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
+    //            .withDatabaseName("scrapper_test")
+    //            .withUsername("test")
+    //            .withPassword("test");
+    //
+    //    @DynamicPropertySource
+    //    static void configureProperties(DynamicPropertyRegistry registry) {
+    //        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+    //        registry.add("spring.datasource.username", postgres::getUsername);
+    //        registry.add("spring.datasource.password", postgres::getPassword);
+    //        registry.add("spring.liquibase.enabled", () -> "true");
+    //        registry.add("spring.liquibase.change-log", () -> "classpath:db/changelog/db.changelog-master.sql");
+    //    }
 
     @Autowired
     private JdbcClient jdbcClient;
@@ -75,7 +73,7 @@ class JDBCLinkRepositoryTest {
             Link expected =
                     linkRepository.findLinksByUserId(userId.get()).iterator().next();
             Assertions.assertEquals(url, expected.url());
-            Assertions.assertEquals(dateTime, expected.date());
+            Assertions.assertEquals(dateTime, expected.updatedAt());
         }
     }
 
@@ -101,7 +99,7 @@ class JDBCLinkRepositoryTest {
                     .next();
 
             Assertions.assertEquals(url, actual.url());
-            Assertions.assertEquals(dateTime, actual.date());
+            Assertions.assertEquals(dateTime, actual.updatedAt());
         }
     }
 

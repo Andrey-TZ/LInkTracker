@@ -41,7 +41,7 @@ public class JDBCLinkService implements LinkService {
             throw new LinkAlreadyExistsException(String.format("Ссылка %s уже отслеживается", link.url()));
         }
 
-        Optional<Long> linkId = repository.addLink(userId.orElseThrow(), link.url(), link.date());
+        Optional<Long> linkId = repository.addLink(userId.orElseThrow(), link.url(), link.updatedAt());
         if (linkId.isEmpty()) {
             throw new LinkServiceException("Не удалось добавить ссылку");
         }

@@ -1,8 +1,8 @@
-package backend.academy.scrapper;
+package backend.academy.scrapper.services;
 
 import backend.academy.common.Link;
 import backend.academy.scrapper.clients.APIClient;
-import backend.academy.scrapper.data.LinkRepository;
+import backend.academy.scrapper.services.link.LinkService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -14,12 +14,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class SchedulerService {
-    private final LinkRepository repo;
+    private final LinkService repo;
     private final List<APIClient> apiClients = new ArrayList<>();
 
     @Autowired
-    public SchedulerService(LinkRepository repo, APIClient gitHubClient, APIClient stackOverflowClient) {
-
+    public SchedulerService(LinkService repo, APIClient gitHubClient, APIClient stackOverflowClient) {
         this.repo = repo;
         apiClients.add(gitHubClient);
         apiClients.add(stackOverflowClient);
