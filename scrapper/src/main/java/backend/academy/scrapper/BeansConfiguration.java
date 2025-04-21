@@ -5,8 +5,12 @@ import backend.academy.scrapper.clients.BotClient;
 import backend.academy.scrapper.clients.GitHubClient;
 import backend.academy.scrapper.clients.StackOverflowClient;
 import backend.academy.scrapper.repos.JDBCLinkRepository;
+import backend.academy.scrapper.repos.JPALinkRepository;
+import backend.academy.scrapper.repos.JPATagRepository;
+import backend.academy.scrapper.repos.JPAUserRepository;
 import backend.academy.scrapper.repos.LinkRepository;
 import backend.academy.scrapper.services.link.JDBCLinkService;
+import backend.academy.scrapper.services.link.JPALinkService;
 import backend.academy.scrapper.services.link.LinkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,7 +23,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @EnableScheduling
 @Configuration
-public class AppConfig {
+public class BeansConfiguration {
     @Bean
     public ThreadPoolTaskScheduler taskScheduler(@Autowired ScrapperConfig scrapperConfig) {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
@@ -37,9 +41,9 @@ public class AppConfig {
     @Bean
     public APIClient stackOverflowClient(@Autowired ScrapperConfig scrapperConfig, @Autowired BotClient botClient) {
         return new StackOverflowClient(
-                scrapperConfig.stackOverflow().accessToken(),
-                scrapperConfig.stackOverflow().key(),
-                botClient);
+            scrapperConfig.stackOverflow().accessToken(),
+            scrapperConfig.stackOverflow().key(),
+            botClient);
     }
 
     @Bean(name = "jdbcRepo")
@@ -52,5 +56,12 @@ public class AppConfig {
     @ConditionalOnProperty(prefix = "app", name = "access-type", havingValue = "SQL")
     public LinkService jdbcLinkService(@Qualifier("jdbcRepo") LinkRepository linkRepository) {
         return new JDBCLinkService(linkRepository);
+    }
+
+    @Bean(name = "jpaLinkService")
+    @ConditionalOnProperty(prefix = "app", name = "access-type", havingValue = "ORM")
+    public LinkService jpaLinkService(
+        JPAUserRepository userRepository, JPALinkRepository linkRepository, JPATagRepository tagRepository) {
+        return new JPALinkService(userRepository, tagRepository, linkRepository);
     }
 }

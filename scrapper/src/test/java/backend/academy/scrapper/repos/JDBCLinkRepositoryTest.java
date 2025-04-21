@@ -54,7 +54,7 @@ class JDBCLinkRepositoryTest {
     void findAllUsers() {
         Long chatId = 1231213L;
         jdbcClient
-                .sql("INSERT INTO chat (chatId) VALUES (:chatId)")
+                .sql("INSERT INTO chat (chat_id) VALUES (:chatId)")
                 .param("chatId", chatId)
                 .update();
         Set<Long> chats = linkRepository.findAllUsers();

@@ -23,7 +23,7 @@ public class JDBCLinkRepository implements LinkRepository {
     public Optional<Long> addChat(long chatId) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcClient
-                .sql("INSERT INTO chat (chatId) VALUES (:chatId)")
+                .sql("INSERT INTO chat (chat_id) VALUES (:chatId)")
                 .param("chatId", chatId)
                 .update(keyHolder, "id");
         return Optional.ofNullable(keyHolder.getKeyAs(Long.class));
@@ -33,7 +33,7 @@ public class JDBCLinkRepository implements LinkRepository {
     public Optional<Long> addLink(long userId, String url, LocalDateTime creationDate) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcClient
-                .sql("INSERT INTO link (url, creation_date, userId) VALUES (:url, :creation_date, :userId)")
+                .sql("INSERT INTO link (url, creation_date, user_id) VALUES (:url, :creation_date, :userId)")
                 .param("url", url)
                 .param("creation_date", creationDate)
                 .param("userId", userId)
@@ -100,7 +100,7 @@ public class JDBCLinkRepository implements LinkRepository {
     @Override
     public Optional<Long> findChatById(long userId) {
         return jdbcClient
-                .sql("SELECT chatId FROM chat WHERE id = ?")
+                .sql("SELECT chat_id FROM chat WHERE id = ?")
                 .param(userId)
                 .query(Long.class)
                 .optional();
@@ -118,7 +118,7 @@ public class JDBCLinkRepository implements LinkRepository {
     @Override
     public Optional<Long> findUserIdByChatId(long chatId) {
         return jdbcClient
-                .sql("SELECT id FROM chat WHERE chatId = ?")
+                .sql("SELECT id FROM chat WHERE chat_id = ?")
                 .param(chatId)
                 .query(Long.class)
                 .optional();
@@ -128,7 +128,7 @@ public class JDBCLinkRepository implements LinkRepository {
     public Set<Link> findLinksByUserIdAndTag(long userId, long tagId) {
         return jdbcClient
                 .sql(
-                        "SELECT l.url, l.creation_date FROM link l JOIN LINK_TAG lt ON l.id = lt.link WHERE l.userId = :userId AND lt.tag = :tagId ")
+                        "SELECT l.url, l.creation_date FROM link l JOIN LINK_TAG lt ON l.id = lt.link WHERE l.user_id = :userId AND lt.tag = :tagId ")
                 .param("userId", userId)
                 .param("tagId", tagId)
                 .query(new LinkRowMapper())
@@ -137,13 +137,13 @@ public class JDBCLinkRepository implements LinkRepository {
 
     @Override
     public Set<Long> findAllUsers() {
-        return jdbcClient.sql("SELECT chatId FROM chat").query(Long.class).set();
+        return jdbcClient.sql("SELECT chat_id FROM chat").query(Long.class).set();
     }
 
     @Override
     public Set<Link> findLinksByUserId(long userId) {
         return jdbcClient
-                .sql("SELECT url, creation_date FROM link WHERE userId = ?")
+                .sql("SELECT url, creation_date FROM link WHERE user_id = ?")
                 .param(userId)
                 .query(new LinkRowMapper())
                 .set();
@@ -152,7 +152,7 @@ public class JDBCLinkRepository implements LinkRepository {
     @Override
     public Optional<Long> findLinkIdByUserIdAndUrl(long userId, String url) {
         return jdbcClient
-                .sql("SELECT id FROM link WHERE userId = :userId AND url = :url")
+                .sql("SELECT id FROM link WHERE user_id = :userId AND url = :url")
                 .param("userId", userId)
                 .param("url", url)
                 .query(Long.class)
@@ -162,7 +162,7 @@ public class JDBCLinkRepository implements LinkRepository {
     @Override
     public boolean userExists(Long chatId) {
         return jdbcClient
-                .sql("SELECT EXISTS(SELECT 1 FROM chat WHERE chatId = :chatId)")
+                .sql("SELECT EXISTS(SELECT 1 FROM chat WHERE chat_id = :chatId)")
                 .param("chatId", chatId)
                 .query(Boolean.class)
                 .single();
@@ -172,7 +172,7 @@ public class JDBCLinkRepository implements LinkRepository {
     public boolean linkExists(Long chatId, String url) {
         return jdbcClient
                 .sql(
-                        "SELECT EXISTS(SELECT 1 FROM link JOIN chat ON link.userId = chat.id WHERE chat.chatId = :chatId AND link.url = :url)")
+                        "SELECT EXISTS(SELECT 1 FROM link JOIN chat ON link.user_id = chat.id WHERE chat.chat_id = :chatId AND link.url = :url)")
                 .param("chatId", chatId)
                 .param("url", url)
                 .query(Boolean.class)

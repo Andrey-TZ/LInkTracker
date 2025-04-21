@@ -34,7 +34,7 @@ public class JDBCLinkService implements LinkService {
     public void addLink(long chatId, Link link) {
         Optional<Long> userId = repository.findUserIdByChatId(chatId);
         if (userId.isEmpty()) {
-            throw new UserNotFoundException("Пользователя не существует");
+            throw new UserNotFoundException("Пользователь не существует");
         }
 
         if (repository.linkExists(chatId, link.url())) {

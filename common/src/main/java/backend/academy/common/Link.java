@@ -33,6 +33,12 @@ public class Link {
         updatedAt = LocalDateTime.now();
     }
 
+    public Link(String url, String[] tags, LocalDateTime updatedAt) {
+        this.url = url;
+        this.tags = tags;
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
