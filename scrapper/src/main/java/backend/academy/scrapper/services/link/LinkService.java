@@ -13,4 +13,6 @@ public interface LinkService {
     Set<Link> getLinks(long chatId);
 
     Set<Long> getUsers();
+
+    Set<Long> getUsers(int bathSize, int offset);
 }

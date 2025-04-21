@@ -20,7 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @DataJpaTest
 @Import(TestsBeansContainersConfiguration.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class JPALinkServiceTest {
+class JPALinkServiceTest {
     @Autowired
     private JPAUserRepository userRepository;
 

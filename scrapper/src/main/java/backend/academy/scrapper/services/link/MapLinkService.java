@@ -1,4 +1,4 @@
-package backend.academy.scrapper.data;
+package backend.academy.scrapper.services.link;
 
 import backend.academy.common.Link;
 import backend.academy.scrapper.exceptions.LinkAlreadyExistsException;
@@ -16,12 +16,12 @@ import org.springframework.stereotype.Repository;
 @Slf4j
 @Repository
 @Primary
-public class MapLinkRepository implements LinkRepository {
+public class MapLinkService implements LinkService {
     private final Map<Long, Set<Link>> linkRepository = new ConcurrentHashMap<>();
 
     @Override
     public void addUser(long chatId) {
-        if (userExists(chatId)) {
+        if (linkRepository.containsKey(chatId)) {
             throw new UserAlreadyExistsException("Пользователь уже существует");
         }
         linkRepository.put(chatId, new HashSet<>());
@@ -29,7 +29,7 @@ public class MapLinkRepository implements LinkRepository {
 
     @Override
     public void addLink(long chatId, Link link) {
-        if (!userExists(chatId)) {
+        if (!linkRepository.containsKey(chatId)) {
             throw new UserNotFoundException("Пользователь не найден");
         }
         Set<Link> links = linkRepository.get(chatId);
@@ -65,7 +65,7 @@ public class MapLinkRepository implements LinkRepository {
     }
 
     @Override
-    public boolean userExists(long chatId) {
-        return linkRepository.containsKey(chatId);
+    public Set<Long> getUsers(int bathSize, int offset) {
+        return getUsers();
     }
 }

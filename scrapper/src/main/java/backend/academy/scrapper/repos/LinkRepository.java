@@ -34,6 +34,8 @@ public interface LinkRepository {
 
     Set<Long> findAllUsers();
 
+    Set<Long> findAllUsersByBatches(int batchSize, int offset);
+
     Set<Link> findLinksByUserId(long userId);
 
     Optional<Long> findLinkIdByUserIdAndUrl(long userId, String url);

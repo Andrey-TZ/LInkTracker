@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Repository;
 
-@Repository("jdbcRepo")
 public class JDBCLinkRepository implements LinkRepository {
     private final JdbcClient jdbcClient;
 
@@ -138,6 +136,16 @@ public class JDBCLinkRepository implements LinkRepository {
     @Override
     public Set<Long> findAllUsers() {
         return jdbcClient.sql("SELECT chat_id FROM chat").query(Long.class).set();
+    }
+
+    @Override
+    public Set<Long> findAllUsersByBatches(int batchSize, int offset) {
+        return jdbcClient
+                .sql("SELECT chat_id FROM chat ORDER BY id LIMIT :batchSize OFFSET :offset")
+                .param("batchSize", batchSize)
+                .param("offset", offset)
+                .query(Long.class)
+                .set();
     }
 
     @Override

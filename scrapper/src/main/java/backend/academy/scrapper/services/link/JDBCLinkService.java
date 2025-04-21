@@ -99,4 +99,9 @@ public class JDBCLinkService implements LinkService {
     public Set<Long> getUsers() {
         return repository.findAllUsers();
     }
+
+    @Override
+    public Set<Long> getUsers(int bathSize, int offset) {
+        return repository.findAllUsersByBatches(bathSize, offset);
+    }
 }

@@ -1,6 +1,7 @@
 package backend.academy.scrapper.services;
 
 import backend.academy.common.Link;
+import backend.academy.scrapper.ScrapperConfig;
 import backend.academy.scrapper.clients.APIClient;
 import backend.academy.scrapper.services.link.LinkService;
 import java.util.ArrayList;
@@ -14,31 +15,42 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class SchedulerService {
-    private final LinkService repo;
+    private final LinkService linkService;
     private final List<APIClient> apiClients = new ArrayList<>();
+    private final int batchSize;
 
     @Autowired
-    public SchedulerService(LinkService repo, APIClient gitHubClient, APIClient stackOverflowClient) {
-        this.repo = repo;
+    public SchedulerService(
+            LinkService linkService,
+            APIClient gitHubClient,
+            APIClient stackOverflowClient,
+            ScrapperConfig configuration) {
+        this.linkService = linkService;
         apiClients.add(gitHubClient);
         apiClients.add(stackOverflowClient);
+        this.batchSize = configuration.batchSize();
     }
 
     @Scheduled(cron = "0 * * * * *")
     public void checkUpdates() {
-        log.info("Проверка обновлений");
-        Set<Long> users = repo.getUsers();
-        for (Long user : users) {
-            Set<Link> links = repo.getLinks(user);
-            for (Link link : links) {
-                for (APIClient client : apiClients) {
-                    if (client.getUpdates(user, link)) {
-                        log.info("Успешная проверка");
-                        link.resetDate(); // обновляем дату проверки
-                        break;
+        int offset = 0;
+        Set<Long> users;
+        do {
+            log.info("Проверка обновлений");
+            users = linkService.getUsers(batchSize, offset);
+            for (Long user : users) {
+                Set<Link> links = linkService.getLinks(user);
+                for (Link link : links) {
+                    for (APIClient client : apiClients) {
+                        if (client.getUpdates(user, link)) {
+                            log.info("Успешная проверка");
+                            link.resetDate(); // обновляем дату проверки
+                            break;
+                        }
                     }
                 }
             }
-        }
+            offset += batchSize;
+        } while (!users.isEmpty());
     }
 }

@@ -11,7 +11,8 @@ public record ScrapperConfig(
         StackOverflowCredentials stackOverflow,
         SchedulerConfig scheduler,
         @NotEmpty String botURL,
-        @NotEmpty String accessType) {
+        @NotEmpty String accessType,
+        @NotEmpty Integer batchSize) {
     public record StackOverflowCredentials(@NotEmpty String key, @NotEmpty String accessToken) {}
 
     public record SchedulerConfig(@NotEmpty Integer threads) {}

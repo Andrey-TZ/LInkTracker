@@ -7,6 +7,7 @@ app:
     threads: 5
   bot-url: http://localhost:8080
   access-type: SQL
+  batch-size: 50
 
 spring:
   application:

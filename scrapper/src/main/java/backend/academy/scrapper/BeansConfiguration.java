@@ -41,9 +41,9 @@ public class BeansConfiguration {
     @Bean
     public APIClient stackOverflowClient(@Autowired ScrapperConfig scrapperConfig, @Autowired BotClient botClient) {
         return new StackOverflowClient(
-            scrapperConfig.stackOverflow().accessToken(),
-            scrapperConfig.stackOverflow().key(),
-            botClient);
+                scrapperConfig.stackOverflow().accessToken(),
+                scrapperConfig.stackOverflow().key(),
+                botClient);
     }
 
     @Bean(name = "jdbcRepo")
@@ -61,7 +61,7 @@ public class BeansConfiguration {
     @Bean(name = "jpaLinkService")
     @ConditionalOnProperty(prefix = "app", name = "access-type", havingValue = "ORM")
     public LinkService jpaLinkService(
-        JPAUserRepository userRepository, JPALinkRepository linkRepository, JPATagRepository tagRepository) {
+            JPAUserRepository userRepository, JPALinkRepository linkRepository, JPATagRepository tagRepository) {
         return new JPALinkService(userRepository, tagRepository, linkRepository);
     }
 }
