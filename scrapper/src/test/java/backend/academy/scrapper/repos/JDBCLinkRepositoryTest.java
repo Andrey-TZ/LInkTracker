@@ -14,8 +14,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+@TestPropertySource(properties = {"app.access-type:SQL"})
 @Testcontainers
 @JdbcTest
 @Import(TestsBeansContainersConfiguration.class)

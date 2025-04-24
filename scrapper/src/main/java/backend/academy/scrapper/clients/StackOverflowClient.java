@@ -11,12 +11,10 @@ import java.time.ZoneOffset;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Slf4j
-@Component
 public class StackOverflowClient implements APIClient {
     private static final String FILTER = "!T3AudphlMGKJd5uPja";
     private final WebClient webClient;

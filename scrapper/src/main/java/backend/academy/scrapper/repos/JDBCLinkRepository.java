@@ -5,10 +5,14 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
 
+@Conditional(JDBCEnabledCondition.class)
+@Repository
 public class JDBCLinkRepository implements LinkRepository {
     private final JdbcClient jdbcClient;
 

@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -122,6 +123,8 @@ public class JPALinkService implements LinkService {
     public Set<Long> getUsers(int bathSize, int offset) {
         int page = offset / bathSize;
         Pageable pageable = PageRequest.of(page, bathSize);
-        return userRepository.findAllUsersBatches(pageable);
+        Page<Long> pageOfIds = userRepository.findAllUsersBatches(pageable);
+
+        return new HashSet<>(pageOfIds.getContent());
     }
 }

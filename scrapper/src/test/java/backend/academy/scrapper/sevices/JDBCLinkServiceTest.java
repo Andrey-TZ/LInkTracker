@@ -3,7 +3,6 @@ package backend.academy.scrapper.sevices;
 import backend.academy.common.Link;
 import backend.academy.scrapper.TestsBeansContainersConfiguration;
 import backend.academy.scrapper.repos.JDBCLinkRepository;
-import backend.academy.scrapper.repos.LinkRepository;
 import backend.academy.scrapper.services.link.JDBCLinkService;
 import backend.academy.scrapper.services.link.LinkService;
 import java.util.Set;
@@ -15,33 +14,21 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+@TestPropertySource(properties = {"app.access-type:SQL"})
 @Testcontainers
 @JdbcTest
 @Import(TestsBeansContainersConfiguration.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class JDBCLinkServiceTest {
-    //    @Container
-    //    @ServiceConnection
-    //    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
-    //            .withDatabaseName("scrapper_test")
-    //            .withUsername("test")
-    //            .withPassword("test");
-    //
-    //    @DynamicPropertySource
-    //    static void configureProperties(DynamicPropertyRegistry registry) {
-    //        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-    //        registry.add("spring.datasource.username", postgres::getUsername);
-    //        registry.add("spring.datasource.password", postgres::getPassword);
-    //        registry.add("spring.liquibase.enabled", () -> "true");
-    //        registry.add("spring.liquibase.change-log", () -> "classpath:db/changelog/db.changelog-master.sql");
-    //    }
 
     @Autowired
     private JdbcClient jdbcClient;
 
-    private LinkRepository repository;
+    private JDBCLinkRepository repository;
+
     private LinkService linkService;
 
     @BeforeEach

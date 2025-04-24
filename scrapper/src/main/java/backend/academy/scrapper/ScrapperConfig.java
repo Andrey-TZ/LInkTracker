@@ -1,5 +1,6 @@
 package backend.academy.scrapper;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
@@ -12,7 +13,7 @@ public record ScrapperConfig(
         SchedulerConfig scheduler,
         @NotEmpty String botURL,
         @NotEmpty String accessType,
-        @NotEmpty Integer batchSize) {
+        @Min(1) Integer batchSize) {
     public record StackOverflowCredentials(@NotEmpty String key, @NotEmpty String accessToken) {}
 
     public record SchedulerConfig(@NotEmpty Integer threads) {}
