@@ -8,6 +8,7 @@ import backend.academy.scrapper.repos.JPATagRepository;
 import backend.academy.scrapper.repos.JPAUserRepository;
 import backend.academy.scrapper.services.link.JPALinkService;
 import java.util.Set;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import javax.sql.DataSource;
 
 @TestPropertySource(properties = {"app.access-type:ORM"})
 @Testcontainers
