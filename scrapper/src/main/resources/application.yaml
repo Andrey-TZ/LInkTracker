@@ -6,7 +6,7 @@ app:
   scheduler:
     threads: 5
   bot-url: http://localhost:8080
-  access-type: SQL
+  access-type: ORM
   batch-size: 50
 
 spring:
@@ -21,11 +21,11 @@ spring:
     init:
       mode: always
   liquibase:
-    enabled: true
+    enabled: false
     change-log: classpath:db/changelog/db.changelog-master.sql
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: none
     open-in-view: false
 
 server:

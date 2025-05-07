@@ -31,7 +31,7 @@ public class SchedulerService {
         this.batchSize = configuration.batchSize();
     }
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(initialDelay = 1000, fixedRate = 5000)
     public void checkUpdates() {
         int offset = 0;
         Set<Long> users;

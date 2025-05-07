@@ -1,6 +1,7 @@
 package backend.academy.scrapper.sevices;
 
 import backend.academy.common.Link;
+import backend.academy.scrapper.DataBaseMigrator;
 import backend.academy.scrapper.TestsBeansContainersConfiguration;
 import backend.academy.scrapper.repos.JPALinkRepository;
 import backend.academy.scrapper.repos.JPATagRepository;
@@ -16,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import javax.sql.DataSource;
 
 @TestPropertySource(properties = {"app.access-type:ORM"})
 @Testcontainers
@@ -23,6 +25,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Import(TestsBeansContainersConfiguration.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class JPALinkServiceTest {
+    @Autowired
+    private DataSource dataSource;
+
     @Autowired
     private JPAUserRepository userRepository;
 
@@ -36,6 +41,7 @@ class JPALinkServiceTest {
 
     @BeforeEach
     void setUp() {
+        DataBaseMigrator.runLiquibaseMigration(dataSource);
         linkService = new JPALinkService(userRepository, tagRepository, linkRepository);
     }
 

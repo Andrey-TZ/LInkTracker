@@ -1,12 +1,14 @@
 package backend.academy.scrapper.repos;
 
 import backend.academy.common.Link;
+import backend.academy.scrapper.DataBaseMigrator;
 import backend.academy.scrapper.TestsBeansContainersConfiguration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import javax.sql.DataSource;
 
 @TestPropertySource(properties = {"app.access-type:SQL"})
 @Testcontainers
@@ -24,21 +27,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class JDBCLinkRepositoryTest {
 
-    //    @Container
-    //    @ServiceConnection
-    //    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
-    //            .withDatabaseName("scrapper_test")
-    //            .withUsername("test")
-    //            .withPassword("test");
-    //
-    //    @DynamicPropertySource
-    //    static void configureProperties(DynamicPropertyRegistry registry) {
-    //        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-    //        registry.add("spring.datasource.username", postgres::getUsername);
-    //        registry.add("spring.datasource.password", postgres::getPassword);
-    //        registry.add("spring.liquibase.enabled", () -> "true");
-    //        registry.add("spring.liquibase.change-log", () -> "classpath:db/changelog/db.changelog-master.sql");
-    //    }
+    @Autowired
+    private DataSource dataSource;
 
     @Autowired
     private JdbcClient jdbcClient;
@@ -47,8 +37,11 @@ class JDBCLinkRepositoryTest {
 
     private LinkRepository linkRepository;
 
+
+
     @BeforeEach
     void setUp() {
+        DataBaseMigrator.runLiquibaseMigration(dataSource);
         linkRepository = new JDBCLinkRepository(jdbcClient);
     }
 
