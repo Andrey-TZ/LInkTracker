@@ -60,13 +60,13 @@ class JDBCLinkRepositoryTest {
         String url = "github.com";
         LocalDateTime dateTime = LocalDateTime.parse(LocalDateTime.now().format(formatter));
         Optional<Long> userId = linkRepository.addChat(chatId);
-        if (userId.isPresent()) {
-            linkRepository.addLink(userId.get(), url, dateTime);
-            Link expected =
-                    linkRepository.findLinksByUserId(userId.get()).iterator().next();
-            Assertions.assertEquals(url, expected.url());
-            Assertions.assertEquals(dateTime, expected.updatedAt());
-        }
+        linkRepository.addLink(userId.orElseThrow(), url, dateTime);
+        Link expected = linkRepository
+                .findLinksByUserId(userId.orElseThrow())
+                .iterator()
+                .next();
+        Assertions.assertEquals(url, expected.url());
+        Assertions.assertEquals(dateTime, expected.updatedAt());
     }
 
     @Test
@@ -76,23 +76,18 @@ class JDBCLinkRepositoryTest {
         String tag = "study";
         LocalDateTime dateTime = LocalDateTime.parse(LocalDateTime.now().format(formatter));
         Optional<Long> userId = linkRepository.addChat(chatId);
+        Optional<Long> linkId = linkRepository.addLink(userId.orElseThrow(), url, dateTime);
+        Optional<Long> tagId = linkRepository.addTag(tag);
 
-        if (userId.isPresent()) {
-            Optional<Long> linkId = linkRepository.addLink(userId.get(), url, dateTime);
-            Optional<Long> tagId = linkRepository.addTag(tag);
-            if (linkId.isEmpty() || tagId.isEmpty()) {
-                return;
-            }
-            linkRepository.addLinkTag(linkId.get(), tagId.get());
+        linkRepository.addLinkTag(linkId.orElseThrow(), tagId.orElseThrow());
 
-            Link actual = linkRepository
-                    .findLinksByUserIdAndTag(userId.get(), tagId.get())
-                    .iterator()
-                    .next();
+        Link actual = linkRepository
+                .findLinksByUserIdAndTag(userId.orElseThrow(), tagId.orElseThrow())
+                .iterator()
+                .next();
 
-            Assertions.assertEquals(url, actual.url());
-            Assertions.assertEquals(dateTime, actual.updatedAt());
-        }
+        Assertions.assertEquals(url, actual.url());
+        Assertions.assertEquals(dateTime, actual.updatedAt());
     }
 
     @Test
@@ -103,20 +98,16 @@ class JDBCLinkRepositoryTest {
         LocalDateTime dateTime = LocalDateTime.parse(LocalDateTime.now().format(formatter));
         Optional<Long> userId = linkRepository.addChat(chatId);
 
-        if (userId.isPresent()) {
-            Optional<Long> linkId = linkRepository.addLink(userId.get(), url, dateTime);
-            Optional<Long> tagId = linkRepository.addTag(tag);
-            if (linkId.isEmpty() || tagId.isEmpty()) {
-                return;
-            }
-            linkRepository.addLinkTag(linkId.get(), tagId.get());
+        Optional<Long> linkId = linkRepository.addLink(userId.orElseThrow(), url, dateTime);
+        Optional<Long> tagId = linkRepository.addTag(tag);
 
-            linkRepository.deleteLinkTag(linkId.get(), tagId.get());
-            linkRepository.deleteLink(linkId.get());
+        linkRepository.addLinkTag(linkId.orElseThrow(), tagId.orElseThrow());
 
-            Set<Link> actual = linkRepository.findLinksByUserIdAndTag(userId.get(), tagId.get());
+        linkRepository.deleteLinkTag(linkId.orElseThrow(), tagId.orElseThrow());
+        linkRepository.deleteLink(linkId.orElseThrow());
 
-            Assertions.assertTrue(actual.isEmpty());
-        }
+        Set<Link> actual = linkRepository.findLinksByUserIdAndTag(userId.orElseThrow(), tagId.orElseThrow());
+
+        Assertions.assertTrue(actual.isEmpty());
     }
 }

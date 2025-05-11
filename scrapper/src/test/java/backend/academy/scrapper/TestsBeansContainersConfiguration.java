@@ -5,11 +5,11 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
 import org.testcontainers.containers.PostgreSQLContainer;
-// import org.testcontainers.kafka.KafkaContainer;
+import org.testcontainers.kafka.KafkaContainer;
 // import org.testcontainers.utility.DockerImageName;
 
 // isolated from the "bot" module's containers!
-@TestConfiguration
+@TestConfiguration(proxyBeanMethods = false)
 public class TestsBeansContainersConfiguration {
 
     //    @Bean
@@ -30,10 +30,12 @@ public class TestsBeansContainersConfiguration {
                 .withPassword("test");
     }
 
-    //    @Bean
-    //    @RestartScope
-    //    @ServiceConnection
-    //    KafkaContainer kafkaContainer() {
-    //        return new KafkaContainer("apache/kafka-native:3.8.1").withExposedPorts(9092);
-    //    }
+    @Bean
+    @RestartScope
+    @ServiceConnection
+    KafkaContainer kafkaContainer() {
+        return new KafkaContainer("apache/kafka-native:3.8.1")
+                .withExposedPorts(9092)
+                .withEnv("KAFKA_AUTO_CREATE_TOPICS_ENABLE", "true");
+    }
 }

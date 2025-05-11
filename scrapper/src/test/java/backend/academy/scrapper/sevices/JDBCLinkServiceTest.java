@@ -1,11 +1,13 @@
 package backend.academy.scrapper.sevices;
 
 import backend.academy.common.Link;
+import backend.academy.scrapper.DataBaseMigrator;
 import backend.academy.scrapper.TestsBeansContainersConfiguration;
 import backend.academy.scrapper.repos.JDBCLinkRepository;
 import backend.academy.scrapper.services.link.JDBCLinkService;
 import backend.academy.scrapper.services.link.LinkService;
 import java.util.Set;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +27,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class JDBCLinkServiceTest {
 
     @Autowired
+    private DataSource dataSource;
+
+    @Autowired
     private JdbcClient jdbcClient;
 
     private JDBCLinkRepository repository;
@@ -39,6 +44,7 @@ class JDBCLinkServiceTest {
 
     @Test
     void addUserThanFind() {
+        DataBaseMigrator.runLiquibaseMigration(dataSource);
         long chatId = 525252L;
         linkService.addUser(chatId);
         Long actual = linkService.getUsers().iterator().next();

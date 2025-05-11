@@ -1,8 +1,8 @@
 package backend.academy.scrapper.services;
 
 import backend.academy.common.Link;
-import backend.academy.scrapper.ScrapperConfig;
 import backend.academy.scrapper.clients.APIClient;
+import backend.academy.scrapper.config.ScrapperConfig;
 import backend.academy.scrapper.services.link.LinkService;
 import java.util.ArrayList;
 import java.util.List;

@@ -11,6 +11,11 @@
     <artifactId>bot</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.16.1</version>
+        </dependency>
         <!-- DTO -->
         <dependency>
             <groupId>backend.academy</groupId>
@@ -51,10 +56,10 @@
         </dependency>
 
         <!-- Kafka -->
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.kafka</groupId>-->
-        <!--            <artifactId>spring-kafka</artifactId>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
 
         <!-- Actuator -->
         <dependency>
@@ -119,9 +124,15 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!--        <dependency>-->
-        <!--            <groupId>org.springframework.kafka</groupId>-->
-        <!--            <artifactId>spring-kafka-test</artifactId>-->
+        <!--            <groupId>commons-io</groupId>-->
+        <!--            <artifactId>commons-io</artifactId>-->
+        <!--            <version>2.14.0</version> &lt;!&ndash; Или любая версия >= 2.7 &ndash;&gt;-->
         <!--            <scope>test</scope>-->
         <!--        </dependency>-->
     </dependencies>

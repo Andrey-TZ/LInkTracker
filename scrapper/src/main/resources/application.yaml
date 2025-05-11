@@ -4,10 +4,11 @@ app:
     key: ${SO_TOKEN_KEY}
     access-token: ${SO_ACCESS_TOKEN}
   scheduler:
-    threads: 5
+    threads: 1
   bot-url: http://localhost:8080
-  access-type: ORM
+  access-type: SQL
   batch-size: 50
+  message-transport: kafka
 
 spring:
   application:
@@ -27,6 +28,15 @@ spring:
     hibernate:
       ddl-auto: none
     open-in-view: false
+  kafka:
+    bootstrap-servers: http://localhost:9092
+    topic: notifications
+    consumer:
+      auto-offset-reset: earliest
+      group-id: first
+
+test:
+  topic: test
 
 server:
   port: 8081

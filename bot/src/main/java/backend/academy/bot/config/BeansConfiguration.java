@@ -1,5 +1,7 @@
-package backend.academy.bot;
+package backend.academy.bot.config;
 
+import backend.academy.bot.CommandProcessor;
+import backend.academy.bot.TelegramBotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;

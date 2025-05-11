@@ -4,6 +4,7 @@ import backend.academy.common.Link;
 import backend.academy.common.Update;
 import backend.academy.scrapper.data.GitHubIssue;
 import backend.academy.scrapper.exceptions.APIException;
+import backend.academy.scrapper.services.NotificationService;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.ZoneOffset;
@@ -16,14 +17,14 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class GitHubClient implements APIClient {
     private final WebClient webClient;
-    private final BotClient botClient;
+    private final NotificationService botClient;
 
-    public GitHubClient(String githubToken, BotClient botClient) {
+    public GitHubClient(String githubToken, NotificationService httpNotificationService) {
         this.webClient = WebClient.builder()
                 .baseUrl("https://api.github.com/")
                 .defaultHeader("Authorization", "token " + githubToken)
                 .build();
-        this.botClient = botClient;
+        this.botClient = httpNotificationService;
     }
 
     public void getIssues(String owner, String repo, String since, String link, long chatId) {

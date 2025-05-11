@@ -1,6 +1,7 @@
 package backend.academy.scrapper.repos;
 
 import backend.academy.common.Link;
+import backend.academy.scrapper.conditions.JDBCEnabledCondition;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;

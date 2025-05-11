@@ -1,13 +1,13 @@
-package backend.academy.scrapper;
+package backend.academy.scrapper.config;
 
 import backend.academy.scrapper.clients.APIClient;
-import backend.academy.scrapper.clients.BotClient;
 import backend.academy.scrapper.clients.GitHubClient;
 import backend.academy.scrapper.clients.StackOverflowClient;
 import backend.academy.scrapper.repos.JPALinkRepository;
 import backend.academy.scrapper.repos.JPATagRepository;
 import backend.academy.scrapper.repos.JPAUserRepository;
 import backend.academy.scrapper.repos.LinkRepository;
+import backend.academy.scrapper.services.HttpNotificationService;
 import backend.academy.scrapper.services.link.JDBCLinkService;
 import backend.academy.scrapper.services.link.JPALinkService;
 import backend.academy.scrapper.services.link.LinkService;
@@ -33,16 +33,18 @@ public class BeansConfiguration {
     }
 
     @Bean
-    public APIClient gitHubClient(@Autowired ScrapperConfig scrapperConfig, @Autowired BotClient botClient) {
-        return new GitHubClient(scrapperConfig.githubToken(), botClient);
+    public APIClient gitHubClient(
+            @Autowired ScrapperConfig scrapperConfig, @Autowired HttpNotificationService httpNotificationService) {
+        return new GitHubClient(scrapperConfig.githubToken(), httpNotificationService);
     }
 
     @Bean
-    public APIClient stackOverflowClient(@Autowired ScrapperConfig scrapperConfig, @Autowired BotClient botClient) {
+    public APIClient stackOverflowClient(
+            @Autowired ScrapperConfig scrapperConfig, @Autowired HttpNotificationService httpNotificationService) {
         return new StackOverflowClient(
                 scrapperConfig.stackOverflow().accessToken(),
                 scrapperConfig.stackOverflow().key(),
-                botClient);
+                httpNotificationService);
     }
 
     @Bean(name = "jdbcLinkService")

@@ -1,4 +1,4 @@
-package backend.academy.scrapper;
+package backend.academy.scrapper.config;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -13,7 +13,8 @@ public record ScrapperConfig(
         SchedulerConfig scheduler,
         @NotEmpty String botURL,
         @NotEmpty String accessType,
-        @Min(1) Integer batchSize) {
+        @Min(1) Integer batchSize,
+        @NotEmpty String messageTransport) {
     public record StackOverflowCredentials(@NotEmpty String key, @NotEmpty String accessToken) {}
 
     public record SchedulerConfig(@NotEmpty Integer threads) {}

@@ -1,6 +1,8 @@
 app:
   telegram-token: ${TELEGRAM_TOKEN} # env variable
   scrapper-url: http://localhost:8081
+  message-transport: http
+
 
 spring:
   application:
@@ -11,9 +13,15 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+  kafka:
+    bootstrap-servers: localhost:9092
 
 server:
   port: 8080
+
+kafka:
+  topic: notifications
+
 
 springdoc:
   swagger-ui:

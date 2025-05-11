@@ -1,5 +1,6 @@
 package backend.academy.scrapper.repos;
 
+import backend.academy.scrapper.conditions.JPARepositoryEnabledCondition;
 import backend.academy.scrapper.entities.User;
 import java.util.Optional;
 import org.springframework.context.annotation.Conditional;
