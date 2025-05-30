@@ -47,37 +47,45 @@ class JPALinkServiceTest {
 
     @Test
     void addUserThanFind() {
+        // Arrange
         long chatId = 525252L;
         linkService.addUser(chatId);
 
+        // Act
         Long actual = linkService.getUsers().iterator().next();
 
+        // Assert
         Assertions.assertEquals(chatId, actual);
     }
 
     @Test
     void addLinkThanFind() {
+        // Arrange
         long chatId = 525252L;
         linkService.addUser(chatId);
         Link link = new Link("github.com", new String[] {"work", "job"});
         linkService.addLink(chatId, link);
 
+        // Act
         Link actual = linkService.getLinks(chatId).iterator().next();
 
+        // Assert
         Assertions.assertEquals(link, actual);
     }
 
     @Test
     void addLinkThanDelete() {
+        // Arrange
         long chatId = 525252L;
         linkService.addUser(chatId);
         Link link = new Link("github.com", new String[] {"work", "job"});
         linkService.addLink(chatId, link);
 
+        // Act
         linkService.deleteLink(chatId, link);
 
+        // Assert
         Set<Link> actual = linkService.getLinks(chatId);
-
         Assertions.assertTrue(actual.isEmpty());
     }
 }

@@ -69,55 +69,77 @@ class TelegramBotServiceTest {
 
     @Test
     void handleCommand_Track() {
+        // Arrange
         String[] args = {"/track", "https://stackoverflow.com/", "study"};
         UserContext context = new UserContext(TelegramBotService.DialogState.AWAITING_COMMAND);
+
+        // Act
         telegramBotService.waitCommand(chatId, args, context);
 
+        // Assert
         verify(commandProcessor, times(1)).trackLink(chatId, args);
     }
 
     @Test
     void handleCommand_Untrack() {
+        // Arrange
         String[] args = {"/untrack", "https://stackoverflow.com/"};
         UserContext context = new UserContext(TelegramBotService.DialogState.AWAITING_COMMAND);
+
+        // Act
         telegramBotService.waitCommand(chatId, args, context);
 
+        // Assert
         verify(commandProcessor, times(1)).untrackLink(chatId, args);
     }
 
     @Test
     void handleCommand_Start() {
+        // Arrange
         String[] args = {"/start"};
         UserContext context = new UserContext(TelegramBotService.DialogState.AWAITING_COMMAND);
+
+        // Act
         telegramBotService.waitCommand(chatId, args, context);
 
+        // Assert
         verify(commandProcessor, times(1)).start(chatId);
     }
 
     @Test
     void handleCommand_List() {
+        // Arrange
         String[] args = {"/list"};
         UserContext context = new UserContext(TelegramBotService.DialogState.AWAITING_COMMAND);
+
+        // Act
         telegramBotService.waitCommand(chatId, args, context);
 
+        // Assert
         verify(commandProcessor, times(1)).list(chatId);
     }
 
     @Test
     void handleCommand_Help() {
+        // Arrange
         String[] args = {"/help"};
         UserContext context = new UserContext(TelegramBotService.DialogState.AWAITING_COMMAND);
+
+        // Act
         telegramBotService.waitCommand(chatId, args, context);
 
+        // Assert
         verify(commandProcessor, times(1)).help(chatId);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"/hep", "/go", "start", "track", "/unrack"})
     void handleInvalidCommand(String command) {
+        // Arrange
         String[] args = {command};
         UserContext context = new UserContext(TelegramBotService.DialogState.AWAITING_COMMAND);
 
+        // Act and Assert
         Assertions.assertThrows(
                 IllegalArgumentException.class, () -> telegramBotService.waitCommand(chatId, args, context));
     }

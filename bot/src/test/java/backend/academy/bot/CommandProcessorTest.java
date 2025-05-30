@@ -32,11 +32,14 @@ class CommandProcessorTest {
             strings = {"https://github.com/user/repo", "https://stackoverflow.com/questions/12345", "http://example.com"
             })
     void trackLink_Valid(String url) {
+        // Arrange
         Long chatId = 10100L;
         String[] command = {"\track ", url, "valid"};
 
+        // Act
         commandProcessor.trackLink(chatId, command);
 
+        // Assert
         verify(scrapperClient, times(1))
                 .sendLink(eq(chatId), argThat(link -> link.url().equals(url)));
     }
@@ -44,11 +47,14 @@ class CommandProcessorTest {
     @ParameterizedTest
     @ValueSource(strings = {"github.com/user/repo", "https://stackoverflow", "http://example."})
     void trackLink_Invalid(String url) {
+        // Arrange
         long chatId = 10100L;
         String[] command = {"\track ", url, "invalid"};
 
+        // Act
         commandProcessor.trackLink(chatId, command);
 
+        // Assert
         verify(eventPublisher, times(1)).publishEvent(argThat(event -> {
             if (!(event instanceof UpdateMessage)) return false;
 
@@ -59,11 +65,14 @@ class CommandProcessorTest {
 
     @Test
     void trackLink_NoLink() {
+        // Arrange
         long chatId = 10100L;
         String[] command = {"/track "};
 
+        // Act
         commandProcessor.trackLink(chatId, command);
 
+        // Assert
         verify(eventPublisher, times(1)).publishEvent(argThat(event -> {
             if (!(event instanceof UpdateMessage)) return false;
 

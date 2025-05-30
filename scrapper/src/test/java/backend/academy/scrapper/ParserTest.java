@@ -16,16 +16,18 @@ class ParserTest {
 
     @Test
     void testStackoverflowParsing() throws IOException {
-
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("StackOverflowDataTest.json")) {
-            StackOverflowResponse response = objectMapper.readValue(inputStream, StackOverflowResponse.class);
-            StackOverflowQuestion question = response.items().getFirst();
-
+            // Arrange
             int comments = 2;
             int answers = 2;
             String title = "What is the difference between putIfAbsent and computeIfAbsent in Java 8 Map ?";
             Long answerCreationDate = 1515576389L;
 
+            // Act
+            StackOverflowResponse response = objectMapper.readValue(inputStream, StackOverflowResponse.class);
+            StackOverflowQuestion question = response.items().getFirst();
+
+            // Assert
             Assertions.assertEquals(comments, question.comments().size());
             Assertions.assertEquals(answers, question.answers().size());
             Assertions.assertEquals(
@@ -37,12 +39,15 @@ class ParserTest {
     @Test
     void testGitHubParsing() throws IOException {
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("GitHubDataTest.json")) {
-            List<GitHubIssue> response = objectMapper.readValue(inputStream, new TypeReference<List<GitHubIssue>>() {});
-
+            // Arrange
             int responseSize = 2;
             String login1 = "Shershah03";
             String date1 = "2025-03-23T18:49:46Z";
 
+            // Act
+            List<GitHubIssue> response = objectMapper.readValue(inputStream, new TypeReference<List<GitHubIssue>>() {});
+
+            // Assert
             Assertions.assertEquals(responseSize, response.size());
             Assertions.assertEquals(login1, response.getFirst().login());
             Assertions.assertEquals(date1, response.getFirst().created());

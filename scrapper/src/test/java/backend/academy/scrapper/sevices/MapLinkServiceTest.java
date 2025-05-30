@@ -21,32 +21,41 @@ class MapLinkServiceTest {
 
     @Test
     void addUser_getLinks() {
+        // Arrange
         long chatId = 10L;
 
+        // Act
         repository.addUser(chatId);
 
+        // Assert
         Assertions.assertTrue(repository.getLinks(chatId).isEmpty());
     }
 
     @Test
     void addUser_Double() {
+        // Arrange
         long chatId = 10L;
 
+        // Act
         repository.addUser(chatId);
 
+        // Assert
         Assertions.assertThrows(UserAlreadyExistsException.class, () -> repository.addUser(chatId));
     }
 
     @Test
     void addLink_NoUser() {
+        // Arrange
         long chatId = 10L;
         Link link = new Link("https://stackoverflow.com/", new String[] {"job"});
 
+        // Act and Assert
         Assertions.assertThrows(UserNotFoundException.class, () -> repository.addLink(chatId, link));
     }
 
     @Test
     void addLink_Double() {
+        // Arrange
         long chatId = 10L;
         Link link1 = new Link("https://stackoverflow.com/", new String[] {"job"});
         Link link2 = new Link("https://stackoverflow.com/", new String[] {"study"});
@@ -54,32 +63,40 @@ class MapLinkServiceTest {
         repository.addUser(chatId);
         repository.addLink(chatId, link1);
 
+        // Act and Assert
         Assertions.assertThrows(LinkAlreadyExistsException.class, () -> repository.addLink(chatId, link2));
     }
 
     @Test
     void addLink() {
+        // Arrange
         long chatId = 10L;
         Link link = new Link("https://stackoverflow.com/", new String[] {"job"});
 
+        // Act
         repository.addUser(chatId);
         repository.addLink(chatId, link);
+
+        // Assert
         Set<Link> links = repository.getLinks(chatId);
         Iterator<Link> iterator = links.iterator();
-
         Assertions.assertEquals(link, iterator.next());
     }
 
     @Test
     void addLink_delete() {
+        // Arrange
         long chatId = 10L;
         Link link = new Link("https://stackoverflow.com/", new String[] {"job"});
         Link linkToDelete = new Link("https://stackoverflow.com/");
 
         repository.addUser(chatId);
         repository.addLink(chatId, link);
+
+        // Act
         repository.deleteLink(chatId, linkToDelete);
 
+        // Assert
         Assertions.assertTrue(repository.getLinks(chatId).isEmpty());
     }
 }

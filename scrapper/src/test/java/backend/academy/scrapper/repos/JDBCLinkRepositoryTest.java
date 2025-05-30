@@ -44,70 +44,82 @@ class JDBCLinkRepositoryTest {
 
     @Test
     void findAllUsers() {
+        // Arrange
         Long chatId = 1231213L;
         jdbcClient
                 .sql("INSERT INTO chat (chat_id) VALUES (:chatId)")
                 .param("chatId", chatId)
                 .update();
+
+        // Act
         Set<Long> chats = linkRepository.findAllUsers();
 
+        // Assert
         Assertions.assertEquals(chatId, chats.iterator().next());
     }
 
     @Test
     void addLinkThanFind() {
+        // Arrange
         long chatId = 1231213L;
-        String url = "github.com";
+        String urlExpected = "github.com";
         LocalDateTime dateTime = LocalDateTime.parse(LocalDateTime.now().format(formatter));
         Optional<Long> userId = linkRepository.addChat(chatId);
-        linkRepository.addLink(userId.orElseThrow(), url, dateTime);
-        Link expected = linkRepository
-                .findLinksByUserId(userId.orElseThrow())
-                .iterator()
-                .next();
-        Assertions.assertEquals(url, expected.url());
-        Assertions.assertEquals(dateTime, expected.updatedAt());
+        linkRepository.addLink(userId.orElseThrow(), urlExpected, dateTime);
+
+        // Act
+        Link urlActual =
+                linkRepository.findLinksByUserId(userId.orElseThrow()).iterator().next();
+
+        // Assert
+        Assertions.assertEquals(urlExpected, urlActual.url());
+        Assertions.assertEquals(dateTime, urlActual.updatedAt());
     }
 
     @Test
     void findLinksByUserIdAndTag() {
+        // Arrange
         long chatId = 1231213L;
         String url = "github.com";
         String tag = "study";
         LocalDateTime dateTime = LocalDateTime.parse(LocalDateTime.now().format(formatter));
+
         Optional<Long> userId = linkRepository.addChat(chatId);
         Optional<Long> linkId = linkRepository.addLink(userId.orElseThrow(), url, dateTime);
         Optional<Long> tagId = linkRepository.addTag(tag);
-
         linkRepository.addLinkTag(linkId.orElseThrow(), tagId.orElseThrow());
 
+        // Act
         Link actual = linkRepository
                 .findLinksByUserIdAndTag(userId.orElseThrow(), tagId.orElseThrow())
                 .iterator()
                 .next();
 
+        // Assert
         Assertions.assertEquals(url, actual.url());
         Assertions.assertEquals(dateTime, actual.updatedAt());
     }
 
     @Test
     void addThanDeleteLink() {
+        // Arrange
         long chatId = 1231214L;
         String url = "github.com";
         String tag = "study";
         LocalDateTime dateTime = LocalDateTime.parse(LocalDateTime.now().format(formatter));
-        Optional<Long> userId = linkRepository.addChat(chatId);
 
+        Optional<Long> userId = linkRepository.addChat(chatId);
         Optional<Long> linkId = linkRepository.addLink(userId.orElseThrow(), url, dateTime);
         Optional<Long> tagId = linkRepository.addTag(tag);
 
         linkRepository.addLinkTag(linkId.orElseThrow(), tagId.orElseThrow());
 
-        linkRepository.deleteLinkTag(linkId.orElseThrow(), tagId.orElseThrow());
-        linkRepository.deleteLink(linkId.orElseThrow());
+        // Act
+        linkRepository.deleteLinkTag(linkId.get(), tagId.get());
+        linkRepository.deleteLink(linkId.get());
+        Set<Link> actual = linkRepository.findLinksByUserIdAndTag(userId.get(), tagId.get());
 
-        Set<Link> actual = linkRepository.findLinksByUserIdAndTag(userId.orElseThrow(), tagId.orElseThrow());
-
+        // Assert
         Assertions.assertTrue(actual.isEmpty());
     }
 }
