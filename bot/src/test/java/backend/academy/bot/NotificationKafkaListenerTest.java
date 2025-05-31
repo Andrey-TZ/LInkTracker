@@ -16,7 +16,6 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -72,14 +71,9 @@ class NotificationKafkaListenerTest {
         //        registry.add("kafka.topic", ()->"test");
     }
 
-    @BeforeEach
-    public void setUp() {
-        System.out.println(kafkaServer);
-        System.out.println(staticKafkaContainer.getBootstrapServers());
-    }
-
     @Test
     void sendThanRead_Success() throws InterruptedException {
+        // Arrange
         String messageExpected = "t-bank.com - 1 обновлений";
         Long chatId = 12345L;
         Update update = new Update();
@@ -88,8 +82,10 @@ class NotificationKafkaListenerTest {
         update.link(testLink);
         update.messages(List.of(messageUpdate));
 
+        // Act
         kafkaProducer.send(new ProducerRecord<>(topic, chatId, update));
 
+        // Assert
         verify(eventPublisher, timeout(3000)).publishEvent(argThat(event -> {
             if (!(event instanceof UpdateMessage message)) return false;
 
@@ -99,13 +95,15 @@ class NotificationKafkaListenerTest {
 
     @Test
     void sendThanRead_Error() {
+        // Arrange
         Long chatId = 12345L;
         Update update = null;
 
+        // Act
         kafkaProducer.send(new ProducerRecord<>(topic, chatId, update));
-
         kafkaConsumer.subscribe(List.of("test-dlt"));
 
+        // Assert
         ConsumerRecords<Long, Update> records = kafkaConsumer.poll(Duration.ofSeconds(10));
         Assertions.assertEquals(1, records.count());
     }

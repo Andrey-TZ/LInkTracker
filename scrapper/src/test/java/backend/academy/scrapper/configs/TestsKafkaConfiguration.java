@@ -1,4 +1,4 @@
-package backend.academy.scrapper;
+package backend.academy.scrapper.configs;
 
 import backend.academy.common.Update;
 import java.util.HashMap;

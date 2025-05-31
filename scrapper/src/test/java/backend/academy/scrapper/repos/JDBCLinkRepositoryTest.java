@@ -2,7 +2,7 @@ package backend.academy.scrapper.repos;
 
 import backend.academy.common.Link;
 import backend.academy.scrapper.DataBaseMigrator;
-import backend.academy.scrapper.TestsBeansContainersConfiguration;
+import backend.academy.scrapper.configs.TestsBeansContainersConfiguration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -68,8 +68,10 @@ class JDBCLinkRepositoryTest {
         linkRepository.addLink(userId.orElseThrow(), urlExpected, dateTime);
 
         // Act
-        Link urlActual =
-                linkRepository.findLinksByUserId(userId.orElseThrow()).iterator().next();
+        Link urlActual = linkRepository
+                .findLinksByUserId(userId.orElseThrow())
+                .iterator()
+                .next();
 
         // Assert
         Assertions.assertEquals(urlExpected, urlActual.url());
@@ -115,9 +117,9 @@ class JDBCLinkRepositoryTest {
         linkRepository.addLinkTag(linkId.orElseThrow(), tagId.orElseThrow());
 
         // Act
-        linkRepository.deleteLinkTag(linkId.get(), tagId.get());
-        linkRepository.deleteLink(linkId.get());
-        Set<Link> actual = linkRepository.findLinksByUserIdAndTag(userId.get(), tagId.get());
+        linkRepository.deleteLinkTag(linkId.orElseThrow(), tagId.orElseThrow());
+        linkRepository.deleteLink(linkId.orElseThrow());
+        Set<Link> actual = linkRepository.findLinksByUserIdAndTag(userId.orElseThrow(), tagId.orElseThrow());
 
         // Assert
         Assertions.assertTrue(actual.isEmpty());

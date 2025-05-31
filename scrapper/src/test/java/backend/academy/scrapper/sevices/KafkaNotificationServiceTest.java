@@ -3,9 +3,9 @@ package backend.academy.scrapper.sevices;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import backend.academy.common.Update;
-import backend.academy.scrapper.TestsBeansContainersConfiguration;
-import backend.academy.scrapper.TestsKafkaConfiguration;
 import backend.academy.scrapper.config.KafkaConfiguration;
+import backend.academy.scrapper.configs.TestsBeansContainersConfiguration;
+import backend.academy.scrapper.configs.TestsKafkaConfiguration;
 import backend.academy.scrapper.services.KafkaNotificationService;
 import backend.academy.scrapper.services.NotificationService;
 import java.time.Duration;
@@ -55,14 +55,12 @@ class KafkaNotificationServiceTest {
     @BeforeEach
     void setUp() {
         kafkaContainer.start();
-        System.out.println(bootstrapServers);
-        System.out.println(topic);
-        System.out.println(kafkaContainer.getBootstrapServers());
         notificationService = new KafkaNotificationService(kafkaTemplate, topic);
     }
 
     @Test
     void sendUpdate() {
+        // Arrange
         Long chatId = 12345L;
         Update update = new Update();
         String testLink = "t-bank.com";
@@ -71,8 +69,10 @@ class KafkaNotificationServiceTest {
         update.messages(List.of(message));
         kafkaConsumer.subscribe(List.of("test"));
 
+        // Act
         notificationService.sendUpdate(chatId, update);
 
+        // Assert
         ConsumerRecords<Long, Update> records = kafkaConsumer.poll(Duration.ofSeconds(10));
         assertThat(records.count()).isGreaterThanOrEqualTo(1);
 

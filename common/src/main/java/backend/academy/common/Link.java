@@ -25,6 +25,7 @@ public class Link {
     public Link(String url) {
         this.url = url;
         updatedAt = LocalDateTime.now();
+        this.tags = new String[0];
     }
 
     public Link(String url, String[] tags) {

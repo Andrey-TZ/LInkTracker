@@ -2,7 +2,7 @@ package backend.academy.scrapper.sevices;
 
 import backend.academy.common.Link;
 import backend.academy.scrapper.DataBaseMigrator;
-import backend.academy.scrapper.TestsBeansContainersConfiguration;
+import backend.academy.scrapper.configs.TestsBeansContainersConfiguration;
 import backend.academy.scrapper.repos.JPALinkRepository;
 import backend.academy.scrapper.repos.JPATagRepository;
 import backend.academy.scrapper.repos.JPAUserRepository;

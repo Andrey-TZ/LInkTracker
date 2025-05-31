@@ -10,14 +10,13 @@ import backend.academy.scrapper.repos.LinkRepository;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
 public class JDBCLinkService implements LinkService {
     private final LinkRepository repository;
 
     @Autowired
-    public JDBCLinkService(@Qualifier("jdbcRepo") LinkRepository repo) {
+    public JDBCLinkService(LinkRepository repo) {
         repository = repo;
     }
 
@@ -81,6 +80,7 @@ public class JDBCLinkService implements LinkService {
         repository.deleteLink(linkId.orElseThrow());
     }
 
+    @Transactional
     @Override
     public Set<Link> getLinks(long chatId) {
         if (!repository.userExists(chatId)) {
@@ -91,7 +91,6 @@ public class JDBCLinkService implements LinkService {
         if (userId.isEmpty()) {
             throw new UserNotFoundException("Пользователь не найден");
         }
-
         return repository.findLinksByUserId(userId.orElseThrow());
     }
 

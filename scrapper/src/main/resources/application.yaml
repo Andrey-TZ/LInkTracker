@@ -10,6 +10,7 @@ app:
   batch-size: 50
   message-transport: kafka
 
+
 spring:
   application:
     name: Scrapper
@@ -34,6 +35,16 @@ spring:
     consumer:
       auto-offset-reset: earliest
       group-id: first
+  redis:
+    host: localhost
+    port: 6379
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000
+      cache-null-values: false
+
+
 
 test:
   topic: test
