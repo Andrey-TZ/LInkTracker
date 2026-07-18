@@ -58,23 +58,28 @@ class TelegramBotServiceTest {
         telegramBotService = new TelegramBotService(botToken, commandProcessor);
     }
 
-    static Stream<Arguments> argsProvider() {
-        return Stream.of(
-                Arguments.of((Object) new String[] {"/track", "https://stackoverflow.com/", "study"}),
-                Arguments.of((Object) new String[] {"/untrack", "https://stackoverflow.com/"}),
-                Arguments.of((Object) new String[] {"/list"}),
-                Arguments.of((Object) new String[] {"/start"}),
-                Arguments.of((Object) new String[] {"/help"}));
-    }
+//    static Stream<Arguments> argsProvider() {
+//        return Stream.of(
+//                Arguments.of((Object) new String[] {"/track", "https://stackoverflow.com/", "study"}),
+//                Arguments.of((Object) new String[] {"/untrack", "https://stackoverflow.com/"}),
+//                Arguments.of((Object) new String[] {"/list"}),
+//                Arguments.of((Object) new String[] {"/start"}),
+//                Arguments.of((Object) new String[] {"/help"}));
+//    }
 
     @Test
     void handleCommand_Track() {
         // Arrange
-        String[] args = {"/track", "https://stackoverflow.com/", "study"};
+        String[] args = {"/track", "https://stackoverflow.com/", "[study]"};
+        String[] args1 = {"/track"};
+        String[] args2 = {"https://stackoverflow.com/"};
+        String[] args3 = {"study"};
         UserContext context = new UserContext(TelegramBotService.DialogState.AWAITING_COMMAND);
 
         // Act
-        telegramBotService.waitCommand(chatId, args, context);
+        telegramBotService.waitCommand(chatId, args1, context);
+        telegramBotService.waitLink(chatId, args2, context);
+        telegramBotService.waitTags(chatId, args3, context);
 
         // Assert
         verify(commandProcessor, times(1)).trackLink(chatId, args);
@@ -84,10 +89,14 @@ class TelegramBotServiceTest {
     void handleCommand_Untrack() {
         // Arrange
         String[] args = {"/untrack", "https://stackoverflow.com/"};
+        String[] args1 = {"/untrack"};
+        String[] args2 = {"https://stackoverflow.com/"};
+
         UserContext context = new UserContext(TelegramBotService.DialogState.AWAITING_COMMAND);
 
         // Act
-        telegramBotService.waitCommand(chatId, args, context);
+        telegramBotService.waitCommand(chatId, args1, context);
+        telegramBotService.waitLink(chatId, args2, context);
 
         // Assert
         verify(commandProcessor, times(1)).untrackLink(chatId, args);

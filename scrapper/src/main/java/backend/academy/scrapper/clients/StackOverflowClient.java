@@ -18,15 +18,15 @@ import reactor.core.publisher.Mono;
 public class StackOverflowClient implements APIClient {
     private static final String FILTER = "!T3AudphlMGKJd5uPja";
     private final WebClient webClient;
-    private final NotificationService botClient;
+    private final NotificationService notificationService;
     private final String key;
 
-    public StackOverflowClient(String accessToken, String key, NotificationService botClient) {
+    public StackOverflowClient(String accessToken, String key, NotificationService notificationService) {
         this.webClient = WebClient.builder()
                 .baseUrl("https://api.stackexchange.com/2.3/questions/")
                 .defaultHeader("Authorization", "Bearer " + accessToken)
                 .build();
-        this.botClient = botClient;
+        this.notificationService = notificationService;
         this.key = key;
     }
 
@@ -49,7 +49,7 @@ public class StackOverflowClient implements APIClient {
                 .subscribe(
                         response -> {
                             String answer = response.items().getFirst().createNotificationMessage();
-                            botClient.sendUpdate(chatId, new Update(link, List.of(answer)));
+                            notificationService.sendUpdate(chatId, new Update(link, List.of(answer)));
                         },
                         error -> log.error("Error in StackOverflow client:{}", error.getMessage()));
     }

@@ -17,14 +17,14 @@ import reactor.core.publisher.Mono;
 @Slf4j
 public class GitHubClient implements APIClient {
     private final WebClient webClient;
-    private final NotificationService botClient;
+    private final NotificationService notificationService;
 
-    public GitHubClient(String githubToken, NotificationService httpNotificationService) {
+    public GitHubClient(String githubToken, NotificationService notificationService) {
         this.webClient = WebClient.builder()
                 .baseUrl("https://api.github.com/")
                 .defaultHeader("Authorization", "token " + githubToken)
                 .build();
-        this.botClient = httpNotificationService;
+        this.notificationService = notificationService;
     }
 
     public void getIssues(String owner, String repo, String since, String link, long chatId) {
@@ -42,7 +42,7 @@ public class GitHubClient implements APIClient {
                 .map(GitHubIssue::createNotificationMessage)
                 .collectList()
                 .subscribe(
-                        response -> botClient.sendUpdate(chatId, new Update(link, response)),
+                        response -> notificationService.sendUpdate(chatId, new Update(link, response)),
                         error -> log.error(
                                 "Error in GitHub client: {}", error.getMessage())); // что потом делать с этим списком
     }

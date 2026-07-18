@@ -1,6 +1,6 @@
 package backend.academy.bot;
 
-import backend.academy.bot.model.UpdateMessage;
+import backend.academy.bot.model.UserMessage;
 import backend.academy.common.Link;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,19 +40,19 @@ public class ScrapperClient {
                         response -> {
                             if (response.isEmpty()) {
                                 eventPublisher.publishEvent(
-                                        new UpdateMessage(chatId, "У вас нет отслеживаемых ссылок"));
+                                        new UserMessage(chatId, "У вас нет отслеживаемых ссылок"));
                                 return;
                             }
                             String message = "Список отслеживаемых ссылок:\n"
                                     + response.stream()
                                             .map(link -> "- " + link.url())
                                             .collect(Collectors.joining("\n"));
-                            eventPublisher.publishEvent(new UpdateMessage(chatId, message));
+                            eventPublisher.publishEvent(new UserMessage(chatId, message));
                         },
                         error -> {
                             log.error("Ошибка при отправке ссылки: {}", error.getMessage());
                             eventPublisher.publishEvent(
-                                    new UpdateMessage(chatId, "Не удалось отправить ссылку: \n" + error.getMessage()));
+                                    new UserMessage(chatId, "Не удалось отправить ссылку: \n" + error.getMessage()));
                         });
     }
 
@@ -68,7 +68,7 @@ public class ScrapperClient {
                 .bodyToMono(String.class)
                 .subscribe(
                         response -> {
-                            eventPublisher.publishEvent(new UpdateMessage(chatId, response));
+                            eventPublisher.publishEvent(new UserMessage(chatId, response));
                             log.info(response);
                         },
                         error -> {
@@ -77,7 +77,7 @@ public class ScrapperClient {
                                     .addKeyValue("Сообщение", error.getMessage())
                                     .log();
                             eventPublisher.publishEvent(
-                                    new UpdateMessage(chatId, "Не удалось отправить ссылку: " + error.getMessage()));
+                                    new UserMessage(chatId, "Не удалось отправить ссылку: " + error.getMessage()));
                         });
     }
 
@@ -89,10 +89,10 @@ public class ScrapperClient {
                 .onStatus(HttpStatusCode::is4xxClientError, response -> response.bodyToMono(String.class)
                         .flatMap(body -> Mono.error(new ClientException(body))))
                 .bodyToMono(String.class)
-                .subscribe(response -> eventPublisher.publishEvent(new UpdateMessage(chatId, response)), error -> {
+                .subscribe(response -> eventPublisher.publishEvent(new UserMessage(chatId, response)), error -> {
                     log.error("Ошибка при добавлении пользователя: {}", error.getMessage());
                     eventPublisher.publishEvent(
-                            new UpdateMessage(chatId, "Не удалось добавить пользователя: " + error.getMessage()));
+                            new UserMessage(chatId, "Не удалось добавить пользователя: " + error.getMessage()));
                 });
     }
 
@@ -107,8 +107,8 @@ public class ScrapperClient {
                         .flatMap(body -> Mono.error(new ClientException(body))))
                 .bodyToMono(String.class)
                 .subscribe(
-                        response -> eventPublisher.publishEvent(new UpdateMessage(chatId, response)),
+                        response -> eventPublisher.publishEvent(new UserMessage(chatId, response)),
                         error -> eventPublisher.publishEvent(
-                                new UpdateMessage(chatId, "Не удалось удалить ссылку: " + error.getMessage())));
+                                new UserMessage(chatId, "Не удалось удалить ссылку: " + error.getMessage())));
     }
 }

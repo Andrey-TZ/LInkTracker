@@ -1,7 +1,7 @@
 package backend.academy.bot;
 
 import backend.academy.bot.model.CommandWithInfo;
-import backend.academy.bot.model.UpdateMessage;
+import backend.academy.bot.model.UserMessage;
 import backend.academy.common.Link;
 import jakarta.annotation.PostConstruct;
 import java.net.URI;
@@ -35,38 +35,42 @@ public class CommandProcessor {
         scrapperClient.addUser(chatId);
     }
 
+    public boolean checkUri(URI uri) {
+        String host = uri.getHost();
+        return uri.isAbsolute() && uri.getScheme() != null && host != null && host.matches(DOMAIN_REGEX);
+    }
+
     public void trackLink(long chatId, String[] args) {
         if (args.length < 2) {
-            eventPublisher.publishEvent(new UpdateMessage(chatId, "Используйте: /track [ссылка]"));
+            eventPublisher.publishEvent(new UserMessage(chatId, "Используйте: /track [ссылка]"));
             return;
         }
         String link = args[1];
         String[] tags = args[2].split(" ");
         try {
             URI uri = URI.create(link);
-            String host = uri.getHost();
-            if (uri.isAbsolute() && uri.getScheme() != null && host != null && host.matches(DOMAIN_REGEX)) {
+            if (checkUri(uri)) {
                 scrapperClient.sendLink(chatId, new Link(link, tags));
             } else {
                 log.atWarn()
                         .setMessage("Невалидная ссылка")
                         .addKeyValue("url", uri)
                         .log();
-                eventPublisher.publishEvent(new UpdateMessage(chatId, "Введена невалидная ссылка"));
+                eventPublisher.publishEvent(new UserMessage(chatId, "Введена невалидная ссылка"));
             }
         } catch (IllegalArgumentException e) {
             log.atError()
                     .setMessage("Неверный формант аргумента команды /track")
                     .addKeyValue("args", args)
                     .log();
-            eventPublisher.publishEvent(new UpdateMessage(chatId, "Введена невалидная ссылка"));
+            eventPublisher.publishEvent(new UserMessage(chatId, "Введена невалидная ссылка"));
         }
     }
 
     public void untrackLink(long chatId, String[] args) {
         log.atDebug().setMessage("Вызвана команда /untrack").log();
         if (args.length < 2) {
-            eventPublisher.publishEvent(new UpdateMessage(chatId, "Используйте: /untrack [ссылка]"));
+            eventPublisher.publishEvent(new UserMessage(chatId, "Используйте: /untrack [ссылка]"));
             return;
         }
         scrapperClient.deleteLink(chatId, new Link(args[1]));
@@ -77,7 +81,7 @@ public class CommandProcessor {
     }
 
     public void help(long chatId) {
-        eventPublisher.publishEvent(new UpdateMessage(
+        eventPublisher.publishEvent(new UserMessage(
                 chatId,
                 "Доступные команды:\n"
                         + commands.values().stream()
@@ -86,7 +90,7 @@ public class CommandProcessor {
     }
 
     @PostConstruct
-    private void registrateCommands() {
+    private void registerCommands() {
         commands.put(
                 "/start",
                 new CommandWithInfo(

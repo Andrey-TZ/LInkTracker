@@ -1,4 +1,4 @@
-package backend.academy.bot;
+package backend.academy.bot.config.conditions;
 
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;

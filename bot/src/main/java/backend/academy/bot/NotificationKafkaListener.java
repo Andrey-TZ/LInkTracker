@@ -1,6 +1,7 @@
 package backend.academy.bot;
 
-import backend.academy.bot.model.UpdateMessage;
+import backend.academy.bot.config.conditions.KafkaEnabledCondition;
+import backend.academy.bot.model.UserMessage;
 import backend.academy.common.Update;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -37,7 +38,7 @@ public class NotificationKafkaListener {
         Long chatId = record.key();
         Update update = record.value();
         String message = update.link() + " - " + update.messages().size() + " обновлений";
-        eventPublisher.publishEvent(new UpdateMessage(chatId, message));
+        eventPublisher.publishEvent(new UserMessage(chatId, message));
         ack.acknowledge();
     }
 

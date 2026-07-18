@@ -5,7 +5,7 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 import backend.academy.bot.config.KafkaConfiguration;
-import backend.academy.bot.model.UpdateMessage;
+import backend.academy.bot.model.UserMessage;
 import backend.academy.common.Update;
 import java.time.Duration;
 import java.util.List;
@@ -87,7 +87,7 @@ class NotificationKafkaListenerTest {
 
         // Assert
         verify(eventPublisher, timeout(3000)).publishEvent(argThat(event -> {
-            if (!(event instanceof UpdateMessage message)) return false;
+            if (!(event instanceof UserMessage message)) return false;
 
             return Objects.equals(message.chatId(), chatId) && message.message().equals(messageExpected);
         }));

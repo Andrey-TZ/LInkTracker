@@ -8,6 +8,7 @@ import backend.academy.scrapper.repos.JPATagRepository;
 import backend.academy.scrapper.repos.JPAUserRepository;
 import backend.academy.scrapper.repos.LinkRepository;
 import backend.academy.scrapper.services.HttpNotificationService;
+import backend.academy.scrapper.services.NotificationService;
 import backend.academy.scrapper.services.link.JDBCLinkService;
 import backend.academy.scrapper.services.link.JPALinkService;
 import backend.academy.scrapper.services.link.LinkService;
@@ -34,17 +35,17 @@ public class BeansConfiguration {
 
     @Bean
     public APIClient gitHubClient(
-            @Autowired ScrapperConfig scrapperConfig, @Autowired HttpNotificationService httpNotificationService) {
-        return new GitHubClient(scrapperConfig.githubToken(), httpNotificationService);
+            @Autowired ScrapperConfig scrapperConfig, @Autowired NotificationService notificationService) {
+        return new GitHubClient(scrapperConfig.githubToken(), notificationService);
     }
 
     @Bean
     public APIClient stackOverflowClient(
-            @Autowired ScrapperConfig scrapperConfig, @Autowired HttpNotificationService httpNotificationService) {
+            @Autowired ScrapperConfig scrapperConfig, @Autowired NotificationService notificationService) {
         return new StackOverflowClient(
                 scrapperConfig.stackOverflow().accessToken(),
                 scrapperConfig.stackOverflow().key(),
-                httpNotificationService);
+            notificationService);
     }
 
     @Bean(name = "jdbcLinkService")

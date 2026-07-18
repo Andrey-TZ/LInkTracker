@@ -1,6 +1,7 @@
 package backend.academy.bot;
 
-import backend.academy.bot.model.UpdateMessage;
+import backend.academy.bot.config.conditions.HttpTransportEnabledCondition;
+import backend.academy.bot.model.UserMessage;
 import backend.academy.common.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -25,7 +26,7 @@ public class UpdateController {
     @PutMapping("/{id}")
     public ResponseEntity<String> receiveUpdates(@PathVariable("id") long id, @RequestBody Update update) {
         String message = update.link() + " - " + update.messages().size() + " обновлений";
-        eventPublisher.publishEvent(new UpdateMessage(id, message));
+        eventPublisher.publishEvent(new UserMessage(id, message));
         return ResponseEntity.ok("Updates were received");
     }
 }

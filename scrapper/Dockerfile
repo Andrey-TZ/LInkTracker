@@ -1,10 +1,12 @@
-FROM maven:3.8.4-openjdk-23 as builder
+# Этап 1: сборка с Maven
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
-COPY . /app/.
-RUN mvn -f /app/pom.xml clean package -Dmaven.test.skip=true
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:17-jre-alpine
+# Этап 2: минимальный образ для запуска
+FROM eclipse-temurin:17-jdk
 WORKDIR /app
-COPY --from=builder /app/target/*.jar /app/*.jar
-EXPOSE 8181
-ENTRYPOINT ["java", "-jar", "/app/*.jar"]
+COPY --from=build /app/target/myapp.jar app.jar
+CMD ["java", "-jar", "app.jar"]

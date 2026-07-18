@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import backend.academy.bot.model.UpdateMessage;
+import backend.academy.bot.model.UserMessage;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,9 +56,9 @@ class CommandProcessorTest {
 
         // Assert
         verify(eventPublisher, times(1)).publishEvent(argThat(event -> {
-            if (!(event instanceof UpdateMessage)) return false;
+            if (!(event instanceof UserMessage)) return false;
 
-            UpdateMessage message = (UpdateMessage) event;
+            UserMessage message = (UserMessage) event;
             return Objects.equals(message.chatId(), chatId) && message.message().equals("Введена невалидная ссылка");
         }));
     }
@@ -74,9 +74,9 @@ class CommandProcessorTest {
 
         // Assert
         verify(eventPublisher, times(1)).publishEvent(argThat(event -> {
-            if (!(event instanceof UpdateMessage)) return false;
+            if (!(event instanceof UserMessage)) return false;
 
-            UpdateMessage message = (UpdateMessage) event;
+            UserMessage message = (UserMessage) event;
             return Objects.equals(message.chatId(), chatId) && message.message().equals("Используйте: /track [ссылка]");
         }));
     }

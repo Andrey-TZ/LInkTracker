@@ -6,11 +6,11 @@ import org.springframework.context.ApplicationEvent;
 
 @Getter
 @Setter
-public class UpdateMessage extends ApplicationEvent {
+public class UserMessage extends ApplicationEvent {
     private Long chatId;
     private String message;
 
-    public UpdateMessage(Long chatId, String message) {
+    public UserMessage(Long chatId, String message) {
         super(message);
         this.chatId = chatId;
         this.message = message;
