@@ -98,6 +98,12 @@
 ### Конфигурация
 
 Основные параметры приложения настраиваются в файле `application.yml`. Ключевые свойства:
-- `app.telegram-bot-token`: Токен вашего Telegram-бота.
-- `app.use-queue`: Включает использование Kafka для отправки обновлений (`true`/`false`).
+#### Bot:
+- `app.telegram-token`: Токен вашего Telegram-бота.
+- `app.message-transport`: Способ получения уведомлений от scrapper (`http`/`kafka`).
 - `app.database-access-type`: Определяет способ доступа к базе данных (`JDBC` или `JPA`).
+#### Scraper:
+- `app.message-transport`: Способ отправки уведомлений боту (`http`/`kafka`).
+- `app.github-token`: Токен для использования GitHub API
+- `app.stackoverflow`: Ключ и токен для использования StackOverflow API
+- `app.access-type`: Использование JDBC или JPA (`SQL`/`JPA`)
